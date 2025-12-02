@@ -3,76 +3,71 @@ package controlador;
 import modelo.*;
 import vista.ConsolaVista;
 import java.util.ArrayList;
+import vista.Login;
+import vista.MenuAdmin;
 
 public class SistemaController {
+
+   
 
     private GestorPacientes gestorPacientes;
     private GestorUsuarios gestorUsuarios;
     private ConsolaVista vista;
+    private Login loginVista;
+    
 
-    public SistemaController(GestorPacientes gp, GestorUsuarios gu, ConsolaVista vista) {
+    public SistemaController(GestorPacientes gp, GestorUsuarios gu, ConsolaVista vista,Login loginVista) {
         this.gestorPacientes = gp;
         this.gestorUsuarios = gu;
         this.vista = vista;
+        this.loginVista = loginVista;
+       
     }
+    
+     public void mostrarLogin() {
+         loginVista.setVisible(true);
+     }
 
-    public void iniciar() {
+    
+    //interfaz por consola antigua
+    /*public void iniciar() {
         Usuario usuarioLogeado = null;
 
         while (usuarioLogeado == null) {
             String usuario = vista.leerTexto("Usuario: ");
             String pass = vista.leerTexto("Contraseña: ");
             usuarioLogeado = gestorUsuarios.login(usuario, pass);
-            
-            
+
             if (usuarioLogeado == null) {
                 vista.mostrarMensaje("Credenciales incorrectas.");
             }
         }
-        
 
         if (usuarioLogeado instanceof Admin) {
             menuAdmin();
         } else {
             menuCuidador();
         }
-    }
+    }*/
 
-    private void menuAdmin() {
-        boolean continuar = true;
-
-        while (continuar) {
-            vista.mostrarMensaje("\n1. Registrar paciente\n2. Listar pacientes\n3. Registrar glicemia\n4. Crear cuidador\n5. Listar usuarios\n6. Cerrar sesión");
-            int opcion = vista.leerEntero("Opción: ");
-
-            if (opcion == 1) {
-                registrarPaciente();
-            } else if (opcion == 2) {
-                listarPacientes();
-            } else if (opcion == 3) {
-                registrarGlicemia();
-            } else if (opcion == 4) {
-                crearCuidador();
-            } else if (opcion == 5) {
-                vista.mostrarUsuarios(gestorUsuarios.getUsuarios());
-            } else if (opcion == 6) {
-                continuar = false;
-            }
-        }
-    }
+   
 
     private void menuCuidador() {
         boolean continuar = true;
 
-        while (continuar){
-            vista.mostrarMensaje("\n1. Registrar glicemia\n2. Listar pacientes\n3. Cerrar sesión");
+        while (continuar) {
+            vista.mostrarMensaje(
+                "\n1. Registrar glicemia" +
+                "\n2. Listar pacientes" +
+                "\n3. Cerrar sesión"
+            );
             int opcion = vista.leerEntero("Opción: ");
 
-            if (opcion == 1){
+            if (opcion == 1) {
                 registrarGlicemia();
-            } else if (opcion == 2){
+            } else if (opcion == 2) {
                 listarPacientes();
-            } else if (opcion == 3){
+            } else if (opcion == 3) {
                 continuar = false;
             }
         }
@@ -95,7 +90,7 @@ public class SistemaController {
         );
 
         Paciente p = new Paciente(nombre, rut, edad, habitacion, t);
-        
+
         boolean agregado = gestorPacientes.agregarPaciente(p);
 
         if (agregado) {
@@ -105,15 +100,12 @@ public class SistemaController {
         }
     }
 
-    private void listarPacientes()
-    {
+    private void listarPacientes() {
         ArrayList<Paciente> lista = gestorPacientes.obtenerTodos();
         vista.mostrarPacientes(lista);
     }
 
-    private void registrarGlicemia(){
-        
-        
+    private void registrarGlicemia() {
         String rut = vista.leerTexto("Rut del paciente: ");
         Paciente p = gestorPacientes.buscarPorRut(rut);
 
@@ -121,26 +113,36 @@ public class SistemaController {
             vista.mostrarMensaje("Paciente no encontrado.");
             return;
         }
-        
 
         int valor = vista.leerGlicemia();
         RegistroGlicemia r = new RegistroGlicemia("", valor);
-        
-        p.agregarRegistroGlicemia(r);
 
+        p.agregarRegistroGlicemia(r);
         vista.mostrarMensaje("Glicemia registrada.");
     }
 
-    private void crearCuidador(){
+    private void crearCuidador() {
         String usuario = vista.leerTexto("Nuevo nombre de usuario: ");
         String pass = vista.leerTexto("Contraseña: ");
-        
+
         boolean creado = gestorUsuarios.agregarCuidador(usuario, pass);
 
-        if (creado){
+        if (creado) {
             vista.mostrarMensaje("Cuidador creado.");
         } else {
             vista.mostrarMensaje("No se pudo crear.");
+        }
+    }
+
+    
+    public void mostrarInterfazSegunRol(Usuario u) {
+        if (u instanceof Admin) {
+            MenuAdmin v = new MenuAdmin();
+            new ControladorAdmin(v, gestorPacientes, gestorUsuarios, u,this);
+            v.setLocationRelativeTo(null);
+            v.setVisible(true);      
+        } else {
+            menuCuidador();
         }
     }
 }
