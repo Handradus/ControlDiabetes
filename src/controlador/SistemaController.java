@@ -1,148 +1,236 @@
 package controlador;
 
 import modelo.*;
-import vista.ConsolaVista;
 import java.util.ArrayList;
-import vista.Login;
-import vista.MenuAdmin;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import vista.EditarPaciente;
+import vista.LoginPanel;
+import vista.PanelAgregarPaciente;
+import vista.PanelMenuAdmin;
+import vista.PanelMenuCuidador;
+import vista.VentanaPrincipal;
 
 public class SistemaController {
 
    
 
-    private GestorPacientes gestorPacientes;
-    private GestorUsuarios gestorUsuarios;
-    private ConsolaVista vista;
-    private Login loginVista;
+   private final VentanaPrincipal ventana;
+    private final GestorPacientes gestorPacientes;
+    private final GestorUsuarios gestorUsuarios;
+    
+    private PanelMenuAdmin panelAdmin;
+    private PanelMenuCuidador panelCuidador;
+    
     
 
-    public SistemaController(GestorPacientes gp, GestorUsuarios gu, ConsolaVista vista,Login loginVista) {
-        this.gestorPacientes = gp;
-        this.gestorUsuarios = gu;
-        this.vista = vista;
-        this.loginVista = loginVista;
-       
+    public SistemaController(VentanaPrincipal ventana,
+                             GestorPacientes gestorPacientes,
+                             GestorUsuarios gestorUsuarios) {
+        this.ventana = ventana;
+        this.gestorPacientes = gestorPacientes;
+        this.gestorUsuarios = gestorUsuarios;
     }
-    
-     public void mostrarLogin() {
-         loginVista.setVisible(true);
-     }
 
     
-    //interfaz por consola antigua
-    /*public void iniciar() {
-        Usuario usuarioLogeado = null;
+     public void iniciar() {
+        ventana.setVisible(true);
+        mostrarLogin();
+    }
 
-        while (usuarioLogeado == null) {
-            String usuario = vista.leerTexto("Usuario: ");
-            String pass = vista.leerTexto("Contraseña: ");
-            usuarioLogeado = gestorUsuarios.login(usuario, pass);
+    private void mostrarLogin() {
+        LoginPanel panelLogin = new LoginPanel();
 
-            if (usuarioLogeado == null) {
-                vista.mostrarMensaje("Credenciales incorrectas.");
+        panelLogin.getIngresarBtn().addActionListener(e -> {
+            String nombreUsuario = panelLogin.getUserTxt().getText();
+            String pass = new String(panelLogin.getPassTxt().getPassword());
+
+            // Acá haces la validación con tu modelo / AuthService
+            // Ejemplo muy genérico:
+             Usuario u = gestorUsuarios.login(nombreUsuario, pass);
+
+            if (u != null) {
+            if (u instanceof Admin) {
+                mostrarMenuAdmin();
+            } else if (u instanceof Cuidador) {
+                mostrarMenuCuidador();
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(
+                        ventana,
+                        "Rol no reconocido para este usuario.",
+                        "Error",
+                        javax.swing.JOptionPane.ERROR_MESSAGE
+                );
             }
-        }
-
-        if (usuarioLogeado instanceof Admin) {
-            menuAdmin();
         } else {
-            menuCuidador();
-        }
-    }*/
-
-   
-
-    private void menuCuidador() {
-        boolean continuar = true;
-
-        while (continuar) {
-            vista.mostrarMensaje(
-                "\n1. Registrar glicemia" +
-                "\n2. Listar pacientes" +
-                "\n3. Cerrar sesión"
+            javax.swing.JOptionPane.showMessageDialog(
+                    ventana,
+                    "Usuario o contraseña incorrectos",
+                    "Error",
+                    javax.swing.JOptionPane.ERROR_MESSAGE
             );
-            int opcion = vista.leerEntero("Opción: ");
-
-            if (opcion == 1) {
-                registrarGlicemia();
-            } else if (opcion == 2) {
-                listarPacientes();
-            } else if (opcion == 3) {
-                continuar = false;
-            }
         }
+    });
+
+    ventana.mostrarPanel(panelLogin);
+}
+
+    private void mostrarMenuCuidador() {
+        panelCuidador = new PanelMenuCuidador();
+
+        panelCuidador.getAddPctBtn().addActionListener(e -> mostrarAgregarPaciente());
+        panelCuidador.getEditPctBtn().addActionListener(e -> mostrarEditarPaciente());
+        panelCuidador.getListarPctBtn().addActionListener(e -> listarPacientes());
+        panelCuidador.getLogoutBtn().addActionListener(e -> cerrarSesion());
+
+        ventana.mostrarPanel(panelCuidador);
     }
 
-    private void registrarPaciente() {
-        String nombre = vista.leerTexto("Nombre: ");
-        String rut = vista.leerTexto("Rut: ");
-        int edad = vista.leerEntero("Edad: ");
-        String habitacion = vista.leerTexto("Habitación: ");
-
-        Tratamiento t = new Tratamiento(
-                "Sin dieta",
-                "Ninguno",
-                false,
-                false,
-                0,
-                0,
-                null
-        );
-
-        Paciente p = new Paciente(nombre, rut, edad, habitacion, t);
-
-        boolean agregado = gestorPacientes.agregarPaciente(p);
-
-        if (agregado) {
-            vista.mostrarMensaje("Paciente registrado.");
-        } else {
-            vista.mostrarMensaje("No se pudo registrar.");
-        }
+    private void mostrarMenuAdmin() {
+        panelAdmin = new PanelMenuAdmin();
+       
+        panelAdmin.getIngresarCuidadorBtn().addActionListener(e -> crearCuidador());
+        panelAdmin.getListarCBtn().addActionListener(e -> listarCuidadores());
+        
+        panelAdmin.getLogoutBtn().addActionListener(e -> cerrarSesion());
+        ventana.mostrarPanel(panelAdmin);
     }
 
-    private void listarPacientes() {
-        ArrayList<Paciente> lista = gestorPacientes.obtenerTodos();
-        vista.mostrarPacientes(lista);
+    private void mostrarAgregarPaciente() {
+        PanelAgregarPaciente panel = new PanelAgregarPaciente();
+        panel.getAddPacienteBtn().addActionListener(e -> crearPaciente(panel));
+
+        ventana.mostrarPanel(panel);
+              
     }
 
-    private void registrarGlicemia() {
-        String rut = vista.leerTexto("Rut del paciente: ");
-        Paciente p = gestorPacientes.buscarPorRut(rut);
+    private void mostrarEditarPaciente() {
+        EditarPaciente panelCuidador = new EditarPaciente();
+        // lógica similar
+        ventana.mostrarPanel(panelCuidador);
+    }
 
-        if (p == null) {
-            vista.mostrarMensaje("Paciente no encontrado.");
+       
+      private void crearCuidador() {
+                
+          
+        // Usamos el panel de admin actual
+        String nombre = panelAdmin.getNombreCTxt().getText().trim();
+        String pass = new String(panelAdmin.getPassTxt().getPassword()).trim();
+
+        if (nombre.isEmpty() || pass.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    ventana,
+                    "No pueden haber campos vacíos",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE
+            );
             return;
         }
 
-        int valor = vista.leerGlicemia();
-        RegistroGlicemia r = new RegistroGlicemia("", valor);
-
-        p.agregarRegistroGlicemia(r);
-        vista.mostrarMensaje("Glicemia registrada.");
-    }
-
-    private void crearCuidador() {
-        String usuario = vista.leerTexto("Nuevo nombre de usuario: ");
-        String pass = vista.leerTexto("Contraseña: ");
-
-        boolean creado = gestorUsuarios.agregarCuidador(usuario, pass);
+        boolean creado = gestorUsuarios.agregarCuidador(nombre, pass);
 
         if (creado) {
-            vista.mostrarMensaje("Cuidador creado.");
+            JOptionPane.showMessageDialog(
+                    ventana,
+                    "Cuidador creado correctamente",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            panelAdmin.getNombreCTxt().setText("");
+            panelAdmin.getPassTxt().setText("");
+            listarCuidadores();
         } else {
-            vista.mostrarMensaje("No se pudo crear.");
+            JOptionPane.showMessageDialog(
+                    ventana,
+                    "Error al crear al nuevo cuidador",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
-    
-    public void mostrarInterfazSegunRol(Usuario u) {
-        if (u instanceof Admin) {
-            MenuAdmin v = new MenuAdmin();
-            new ControladorAdmin(v, gestorPacientes, gestorUsuarios, u,this);
-            v.setLocationRelativeTo(null);
-            v.setVisible(true);      
-        } else {
-            menuCuidador();
+    private void listarCuidadores() {
+        
+        ArrayList<Usuario> usuarios = gestorUsuarios.getUsuarios();
+
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Usuario");
+        modelo.addColumn("Rol");
+
+        for (Usuario u : usuarios) {
+            if (u instanceof Cuidador) {
+                modelo.addRow(new Object[]{u.getNombreUsuario(), u.getRol()});
+            }
         }
+
+        panelAdmin.getTabla().setModel(modelo);
+    }
+
+    private void listarPacientes() {
+        
+        ArrayList<Paciente> pacientes = gestorPacientes.obtenerTodos();
+
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Nombre");
+        modelo.addColumn("RUT");
+        modelo.addColumn("Edad");
+        modelo.addColumn("Habitación");
+
+        for (Paciente p : pacientes) {
+            modelo.addRow(new Object[]{
+                    p.getNombre(),
+                    p.getRut(),
+                    p.getEdad(),
+                    p.getHabitacion()
+            });
+        }
+
+        panelCuidador.getPctTabla().setModel(modelo);
+    }
+
+    private void cerrarSesion() {
+        // No se cierra la ventana principal, solo volvemos al login
+        mostrarLogin();
+    }
+
+    private void crearPaciente(PanelAgregarPaciente panel) {
+        String nombre = panel.getNombrePacienteTxt().getText().trim();
+        String rut = panel.getRutPacienteTxt().getText().trim();
+        String habitacion = panel.getRoomPctTxt().getText().trim();
+
+        int edad;
+    try {
+        edad = Integer.parseInt(panel.getEdadTxt().getText().trim());
+    } catch (NumberFormatException e) {
+        panel.mostrarError("La edad debe ser un número.");
+        return;
+    }
+
+    if (nombre.isEmpty() || rut.isEmpty() || habitacion.isEmpty()) {
+        panel.mostrarError("No pueden haber campos vacíos." );
+        return;
+    }
+
+    Tratamiento t = new Tratamiento(
+        "Sin dieta",
+        "Ninguno",
+        false,
+        false,
+        0,
+        0,
+        null
+    );
+
+        Paciente p = new Paciente(nombre, rut, edad, habitacion, t);
+
+         boolean agregado = gestorPacientes.agregarPaciente(p);
+
+    if (agregado) {
+        panel.mostrarInfo("Paciente registrado correctamente.");
+        mostrarMenuCuidador(); // volver al menú
+    } else {
+        panel.mostrarError("Error al registrar paciente.");
+    }
     }
 }

@@ -1,11 +1,10 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package vista;
 
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -13,16 +12,28 @@ import javax.swing.JTextField;
  *
  * @author Diavuru
  */
-public class Login extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Login.class.getName());
+public class LoginPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form Login
+     * Creates new form LoginPanel
      */
-    public Login() {
+    public LoginPanel() {
         initComponents();
     }
+
+    public JButton getIngresarBtn() {
+        return ingresarBtn;
+    }
+
+    public JPasswordField getPassTxt() {
+        return passTxt;
+    }
+
+    public JTextField getUserTxt() {
+        return userTxt;
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,8 +49,6 @@ public class Login extends javax.swing.JFrame {
         userTxt = new javax.swing.JTextField();
         passTxt = new javax.swing.JPasswordField();
         ingresarBtn = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Usuario");
 
@@ -58,8 +67,8 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -95,71 +104,16 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(ingresarBtn)
                 .addContainerGap(163, Short.MAX_VALUE))
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void ingresarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ingresarBtnActionPerformed
 
     private void passTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passTxtActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void ingresarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ingresarBtnActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Login().setVisible(true));
-    }
-
-    public JButton getIngresarBtn() {
-        return ingresarBtn;
-    }
-
-    public JPasswordField getPassTxt() {
-        return passTxt;
-    }
-
-    public JTextField getUserTxt() {
-        return userTxt;
-    }
-    
-    
-
-    
-     public void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(
-                this,               // Componente padre (la propia ventana)
-                mensaje,            // Texto del error
-                "Error",            // Título de la ventana de diálogo
-                JOptionPane.ERROR_MESSAGE  // Icono de error
-        );
-    }
-    
-    public void mostrarInfo(String mensaje){
-        JOptionPane.showMessageDialog(this, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
-    }
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ingresarBtn;

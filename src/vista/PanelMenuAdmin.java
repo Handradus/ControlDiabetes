@@ -1,11 +1,10 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package vista;
 
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -14,16 +13,44 @@ import javax.swing.JTextField;
  *
  * @author Diavuru
  */
-public class MenuAdmin extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MenuAdmin.class.getName());
+public class PanelMenuAdmin extends javax.swing.JPanel {
 
     /**
-     * Creates new form MenuAdmin
+     * Creates new form PanelMenuAdmin
      */
-    public MenuAdmin() {
+    public PanelMenuAdmin() {
         initComponents();
     }
+
+    public JPasswordField getPassTxt() {
+        return PassTxt;
+    }
+
+    public JButton getIngresarCuidadorBtn() {
+        return ingresarCuidadorBtn;
+    }
+
+    public JButton getListarCBtn() {
+        return listarCBtn;
+    }
+
+    public JButton getListarPBtn() {
+        return listarPBtn;
+    }
+
+    public JButton getLogoutBtn() {
+        return logoutBtn;
+    }
+
+    public JTextField getNombreCTxt() {
+        return nombreCTxt;
+    }
+
+    public JTable getTabla() {
+        return tabla;
+    }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -34,55 +61,17 @@ public class MenuAdmin extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        listarPBtn = new javax.swing.JButton();
+        PassTxt = new javax.swing.JPasswordField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tabla = new javax.swing.JTable();
+        logoutBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         ingresarCuidadorBtn = new javax.swing.JButton();
         listarCBtn = new javax.swing.JButton();
         nombreCTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        listarPBtn = new javax.swing.JButton();
-        PassTxt = new javax.swing.JPasswordField();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tabla = new javax.swing.JTable();
-        logoutBtn = new javax.swing.JButton();
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jLabel1.setText("Menú de Administrador");
-
-        ingresarCuidadorBtn.setText("Nuevo Cuidador");
-        ingresarCuidadorBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ingresarCuidadorBtnActionPerformed(evt);
-            }
-        });
-
-        listarCBtn.setText("Listar Cuidadores");
-
-        nombreCTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nombreCTxtActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Nombre Cuidador");
-
-        jLabel3.setText("Password Cuidador");
 
         listarPBtn.setText("Listar Pacientes");
         listarPBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -117,8 +106,29 @@ public class MenuAdmin extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        jLabel1.setText("Menú de Administrador");
+
+        ingresarCuidadorBtn.setText("Nuevo Cuidador");
+        ingresarCuidadorBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ingresarCuidadorBtnActionPerformed(evt);
+            }
+        });
+
+        listarCBtn.setText("Listar Cuidadores");
+
+        nombreCTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nombreCTxtActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Nombre Cuidador");
+
+        jLabel3.setText("Password Cuidador");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -144,7 +154,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(295, 295, 295)
                         .addComponent(ingresarCuidadorBtn)))
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(180, 180, 180)
                 .addComponent(jLabel1)
@@ -177,13 +187,7 @@ public class MenuAdmin extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void ingresarCuidadorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarCuidadorBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ingresarCuidadorBtnActionPerformed
 
     private void listarPBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listarPBtnActionPerformed
         // TODO add your handling code here:
@@ -197,77 +201,14 @@ public class MenuAdmin extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_logoutBtnActionPerformed
 
+    private void ingresarCuidadorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ingresarCuidadorBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ingresarCuidadorBtnActionPerformed
+
     private void nombreCTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreCTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nombreCTxtActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new MenuAdmin().setVisible(true));
-    }
-
-    public JPasswordField getPassTxt() {
-        return PassTxt;
-    }
-
-    public JButton getIngresarCuidadorBtn() {
-        return ingresarCuidadorBtn;
-    }
-
-    public JButton getListarCBtn() {
-        return listarCBtn;
-    }
-
-    public JButton getListarPBtn() {
-        return listarPBtn;
-    }
-
-    public JTextField getNombreCTxt() {
-        return nombreCTxt;
-    }
-
-    public JTable getTabla() {
-        return tabla;
-    }
-
-    public JButton getLogoutBtn() {
-        return logoutBtn;
-    }
-    
-    
-       public void mostrarError(String mensaje) {
-        JOptionPane.showMessageDialog(
-                this,               // Componente padre (la propia ventana)
-                mensaje,            // Texto del error
-                "Error",            // Título de la ventana de diálogo
-                JOptionPane.ERROR_MESSAGE  // Icono de error
-        );
-    }
-    
-    public void mostrarInfo(String mensaje){
-        JOptionPane.showMessageDialog(this, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
-    }
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField PassTxt;
@@ -275,9 +216,7 @@ public class MenuAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton listarCBtn;
     private javax.swing.JButton listarPBtn;
     private javax.swing.JButton logoutBtn;
