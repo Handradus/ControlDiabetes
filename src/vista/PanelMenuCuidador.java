@@ -5,6 +5,7 @@
 package vista;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 /**
@@ -40,6 +41,19 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
         return logoutBtn;
     }
     
+    
+    public void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(
+                this,               // Componente padre (la propia ventana)
+                mensaje,            // Texto del error
+                "Error",            // Título de la ventana de diálogo
+                JOptionPane.ERROR_MESSAGE  // Icono de error
+        );
+    }
+    
+    public void mostrarInfo(String mensaje){
+        JOptionPane.showMessageDialog(this, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
+    }
     
 
     /**

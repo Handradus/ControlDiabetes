@@ -1,5 +1,6 @@
 package controlador;
 
+import java.io.IOException;
 import modelo.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -10,6 +11,9 @@ import vista.PanelAgregarPaciente;
 import vista.PanelMenuAdmin;
 import vista.PanelMenuCuidador;
 import vista.VentanaPrincipal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javax.swing.Timer;
 
 public class SistemaController {
 
@@ -22,6 +26,8 @@ public class SistemaController {
     private PanelMenuAdmin panelAdmin;
     private PanelMenuCuidador panelCuidador;
     
+    private final DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    
     
 
     public SistemaController(VentanaPrincipal ventana,
@@ -30,6 +36,15 @@ public class SistemaController {
         this.ventana = ventana;
         this.gestorPacientes = gestorPacientes;
         this.gestorUsuarios = gestorUsuarios;
+        
+        try {
+        gestorUsuarios.cargarUsuarios("usuarios.txt");
+        gestorPacientes.cargarPacientes("pacientes.txt");
+        } catch (IOException e) {
+        
+        System.out.println("No se pudieron cargar datos: " + e.getMessage());
+    }
+        iniciarReloj();
     }
 
     
@@ -45,8 +60,6 @@ public class SistemaController {
             String nombreUsuario = panelLogin.getUserTxt().getText();
             String pass = new String(panelLogin.getPassTxt().getPassword());
 
-            // Acá haces la validación con tu modelo / AuthService
-            // Ejemplo muy genérico:
              Usuario u = gestorUsuarios.login(nombreUsuario, pass);
 
             if (u != null) {
@@ -139,6 +152,12 @@ public class SistemaController {
             );
             panelAdmin.getNombreCTxt().setText("");
             panelAdmin.getPassTxt().setText("");
+            
+             try {
+        gestorUsuarios.archivar("usuarios.txt");  // 👈 AHORA sí guardas usuarios
+    } catch (IOException ex) {
+        panelAdmin.mostrarError("Cuidador creado en memoria, pero falló al escribir archivo de usuarios.");
+    }
             listarCuidadores();
         } else {
             JOptionPane.showMessageDialog(
@@ -228,9 +247,28 @@ public class SistemaController {
 
     if (agregado) {
         panel.mostrarInfo("Paciente registrado correctamente.");
+        if (agregado) {
+        panel.mostrarInfo("Paciente registrado correctamente.");
+        try {
+            gestorPacientes.guardarPacientes("pacientes.txt");
+        } catch (IOException ex) {
+            panel.mostrarError("Paciente guardado en memoria, pero falló al escribir archivo.");
+    }
         mostrarMenuCuidador(); // volver al menú
     } else {
         panel.mostrarError("Error al registrar paciente.");
     }
+    }
+    }
+    
+    
+    
+     private void iniciarReloj() {
+        Timer timer = new Timer(1000, e -> {
+            LocalDateTime ahora = LocalDateTime.now();
+            String textoHora = ahora.format(formatoHora);
+            ventana.getHoraLabel().setText(textoHora);
+        });
+        timer.start();
     }
 }

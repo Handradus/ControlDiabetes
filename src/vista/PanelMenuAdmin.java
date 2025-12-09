@@ -5,6 +5,7 @@
 package vista;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -49,7 +50,18 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
     public JTable getTabla() {
         return tabla;
     }
+    public void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(
+                this,               // Componente padre (la propia ventana)
+                mensaje,            // Texto del error
+                "Error",            // Título de la ventana de diálogo
+                JOptionPane.ERROR_MESSAGE  // Icono de error
+        );
+    }
     
+    public void mostrarInfo(String mensaje){
+        JOptionPane.showMessageDialog(this, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
+    }
     
 
     /**
@@ -184,8 +196,8 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
                     .addComponent(listarCBtn)
                     .addComponent(listarPBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(103, 103, 103))
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -3,6 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package modelo;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 /**
  *
@@ -53,5 +58,64 @@ public class GestorPacientes {
             return true;
         }
         return false;
+    }
+    
+    
+   public void guardarPacientes(String nombreArchivo) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))) {
+            for (Paciente p : listaPacientes) {
+                Tratamiento t = p.getTratamiento();
+
+                
+                bw.write(
+                        p.getNombre() + ";" +
+                        p.getRut() + ";" +
+                        p.getEdad() + ";" +
+                        p.getHabitacion() + ";" +
+                                "wip" + ";" +
+                                    "wip" + ";" +
+                                    "wip"
+
+                        
+                );
+                bw.newLine();
+            }
+        }
+    }
+
+
+    public void cargarPacientes(String nombreArchivo) throws IOException {
+        listaPacientes.clear();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split(";");
+
+                String nombre     = partes[0];
+                String rut        = partes[1];
+                int edad          = Integer.parseInt(partes[2]);
+                String habitacion = partes[3];
+
+              
+                String dieta       = partes.length > 4 ? partes[4] : "";
+                String medicamento = partes.length > 5 ? partes[5] : "";
+                boolean sos        = partes.length > 6 && Boolean.parseBoolean(partes[6]);
+
+                Tratamiento t = new Tratamiento(
+                        dieta,
+                        medicamento,
+                        sos,
+                        false,   
+                        0,
+                        0,
+                        null
+                );
+
+                Paciente p = new Paciente(nombre, rut, edad, habitacion, t);
+                listaPacientes.add(p);
+            }
+        }
+    
     }
 }

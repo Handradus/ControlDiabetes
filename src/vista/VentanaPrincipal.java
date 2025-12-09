@@ -5,6 +5,7 @@
 package vista;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -22,15 +23,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private JPanel panelActual;
     
     public VentanaPrincipal() {
-        initUI();
-    }
-    private void initUI() {
+        initComponents();
+        
         setTitle("Control de Pacientes Diabéticos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(800, 600);              // ajusta a lo que uses
         setLocationRelativeTo(null);    // centra la ventana
         setLayout(new java.awt.BorderLayout());
+        ubicarHoraAbajo();
     }
+    
     
     public void mostrarPanel(JPanel nuevoPanel) {
         if (panelActual != null) {
@@ -42,6 +44,21 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         repaint();
     }
 
+    public JLabel getHoraLabel() {
+        return horaLabel;
+    }
+
+    private void ubicarHoraAbajo() {
+    int w = getWidth();
+    int h = getHeight();
+
+    // Ajusta según lo que quieras
+    int x = 20;         // margen izquierdo
+    int y = h - 70;     // posición vertical abajo
+
+    horaLabel.setLocation(x, y);
+}
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -51,17 +68,27 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        horaLabel = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        horaLabel.setText("jLabel1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(horaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(189, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(278, Short.MAX_VALUE)
+                .addComponent(horaLabel)
+                .addContainerGap())
         );
 
         pack();
@@ -93,5 +120,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel horaLabel;
     // End of variables declaration//GEN-END:variables
 }

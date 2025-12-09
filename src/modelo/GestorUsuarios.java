@@ -5,6 +5,12 @@
 
 package modelo;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GestorUsuarios {
@@ -51,5 +57,52 @@ public class GestorUsuarios {
 
     public ArrayList<Usuario> getUsuarios() {
         return usuarios;
+    }
+    
+    public void archivar(String nombreArchivo) throws IOException {
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))){
+            for(Usuario u : usuarios){
+                String rol = u.getRol();
+                if (u instanceof Admin) {
+                rol = "ADMIN";
+            } else {
+                rol = "CUIDADOR";
+            }
+
+                bw.write(u.getNombreUsuario() + ";" + u.getPassword() + ";" + rol);
+                bw.newLine();
+            }
+        }
+    }
+    
+    public void cargarUsuarios(String nombreArchivo) throws FileNotFoundException, IOException{
+        java.io.File f = new java.io.File(nombreArchivo);
+        
+        if (!f.exists()) {
+        System.out.println("Archivo de usuarios no existe, uso solo admin por defecto.");
+        return;
+    }
+        this.usuarios.clear();        
+        try(BufferedReader bf = new BufferedReader(new FileReader(nombreArchivo))){
+            
+            String linea;
+            while((linea = bf.readLine()) != null){
+                String[] partes = linea.split(";");
+                String nombre = partes[0];
+                String pass   = partes[1];
+                String rol    = partes[2];
+                Usuario u;
+            if ("ADMIN".equalsIgnoreCase(rol)) {
+                u = new Admin(nombre, pass);
+            } else {
+                u = new Cuidador(nombre, pass);
+            }
+                usuarios.add(u);
+            }
+        }
+        
+         if (usuarios.isEmpty()) {
+        usuarios.add(new Admin("admin", "1234"));
+    }
     }
 }
