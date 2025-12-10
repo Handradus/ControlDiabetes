@@ -5,7 +5,6 @@ import modelo.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import vista.EditarPaciente;
 import vista.LoginPanel;
 import vista.PanelAgregarPaciente;
 import vista.PanelMenuAdmin;
@@ -14,6 +13,7 @@ import vista.VentanaPrincipal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.Timer;
+import vista.PanelEditarPaciente;
 
 public class SistemaController {
 
@@ -25,6 +25,8 @@ public class SistemaController {
     
     private PanelMenuAdmin panelAdmin;
     private PanelMenuCuidador panelCuidador;
+    private PanelEditarPaciente panelEdicionPCT;
+    
     
     private final DateTimeFormatter formatoHora = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
     
@@ -92,7 +94,27 @@ public class SistemaController {
         panelCuidador = new PanelMenuCuidador();
 
         panelCuidador.getAddPctBtn().addActionListener(e -> mostrarAgregarPaciente());
-        panelCuidador.getEditPctBtn().addActionListener(e -> mostrarEditarPaciente());
+       panelCuidador.getEditPctBtn().addActionListener(e -> {
+    int fila = panelCuidador.getPctTabla().getSelectedRow();
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(ventana, "Seleccione un paciente primero.");
+        return;
+    }
+
+    // Supongamos que en la columna 1 está el RUT
+    String rutSeleccionado = (String) panelCuidador.getPctTabla()
+            .getValueAt(fila, 1); // cambia el índice si tu tabla es distinta
+
+    Paciente paciente = gestorPacientes.buscarPorRut(rutSeleccionado);
+    if (paciente == null) {
+        JOptionPane.showMessageDialog(ventana, "No se encontró el paciente en memoria.");
+        return;
+    }
+
+    mostrarEditarPaciente(paciente);
+});
+        
+        
         panelCuidador.getListarPctBtn().addActionListener(e -> listarPacientes());
         panelCuidador.getLogoutBtn().addActionListener(e -> cerrarSesion());
 
@@ -117,11 +139,55 @@ public class SistemaController {
               
     }
 
-    private void mostrarEditarPaciente() {
-        EditarPaciente panelCuidador = new EditarPaciente();
-        // lógica similar
+    private void mostrarEditarPaciente(Paciente paciente) {
+        panelEdicionPCT = new PanelEditarPaciente();
+        panelEdicionPCT.getNombrePacienteTxt().setText(paciente.getNombre());
+        panelEdicionPCT.getRutPacienteTxt().setText(paciente.getRut());
+        panelEdicionPCT.getRoomPctTxt().setText(paciente.getHabitacion());
+        panelEdicionPCT.getEdadTxt().setText(String.valueOf(paciente.getEdad()));
+        
+        //nuevos datos
+        
+        panelEdicionPCT.getSaveEditPacienteBtn().addActionListener(e -> {
+        String nuevoNombre = panelEdicionPCT.getNombrePacienteTxt().getText();
+        String nuevoRut    = panelEdicionPCT.getRutPacienteTxt().getText();
+        String nuevaHab    = panelEdicionPCT.getRoomPctTxt().getText();
+        String nuevaEdadStr = panelEdicionPCT.getEdadTxt().getText();
+        
+        if (nuevoNombre.isBlank() || nuevoRut.isBlank() || nuevaHab.isBlank()) {
+            JOptionPane.showMessageDialog(ventana, "Complete todos los campos.");
+            return;
+        }
+        
+        paciente.setNombre(nuevoNombre);
+        paciente.setRut(nuevoRut);
+        paciente.setHabitacion(nuevaHab);
+        
+        try {
+             int nuevaEdad = Integer.parseInt(nuevaEdadStr);
+             paciente.setEdad(nuevaEdad);
+         } catch (NumberFormatException ex) {
+             JOptionPane.showMessageDialog(ventana, "Edad inválida");
+             return;
+         }
+    try {
+            gestorPacientes.guardarPacientes("pacientes.txt");  // usa el nombre real que estés usando
+        } catch (IOException ex1) {
+            JOptionPane.showMessageDialog(ventana, "Error al guardar pacientes: " + ex1.getMessage());
+            
+        }
+
+        JOptionPane.showMessageDialog(ventana, "Paciente actualizado correctamente.");
+
+        // 2.3) Volver al menú/cuidador y refrescar la tabla
         ventana.mostrarPanel(panelCuidador);
-    }
+        listarPacientes();  // método tuyo para volver a cargar los datos en la JTable
+    });
+
+    // 3) Mostrar el panel de edición
+    ventana.mostrarPanel(panelEdicionPCT);
+}
+                
 
        
       private void crearCuidador() {
