@@ -43,6 +43,13 @@
               </Group>
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
           </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="69" max="-2" attributes="0"/>
+              <Component id="registrarGlicemiaBtn" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
+              <Component id="verTratamientoBtn" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -53,7 +60,12 @@
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <Component id="logoutBtn" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="registrarGlicemiaBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="verTratamientoBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="addPctBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="listarPctBtn" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -114,6 +126,16 @@
     <Component class="javax.swing.JButton" name="logoutBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cerrar Sesi&#xf3;n"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="registrarGlicemiaBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Registrar Glicemia"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="verTratamientoBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Ver Tratamiento"/>
       </Properties>
     </Component>
   </SubComponents>

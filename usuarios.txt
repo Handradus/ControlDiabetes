@@ -1,2 +1,8 @@
 admin;1234;ADMIN
 belto;1234;CUIDADOR
+Lucas Méndez;lucas;CUIDADOR
+Lucas Ménde;lucas;CUIDADOR
+Lucas;1234;CUIDADOR
+Humberto Andrades;1234;CUIDADOR
+Humbertito Andraito;humberto;CUIDADOR
+Salsa;salsa;CUIDADOR

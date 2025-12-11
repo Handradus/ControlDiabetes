@@ -41,6 +41,14 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
         return logoutBtn;
     }
     
+    public JButton getRegistrarGlicemiaBtn() {
+        return registrarGlicemiaBtn;
+    }
+
+    public JButton getVerTratamientoBtn() {
+        return verTratamientoBtn;
+    }
+
     
     public void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(
@@ -72,6 +80,8 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
         addPctBtn = new javax.swing.JButton();
         listarPctBtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
+        registrarGlicemiaBtn = new javax.swing.JButton();
+        verTratamientoBtn = new javax.swing.JButton();
 
         EditPctBtn.setText("Editar Paciente");
 
@@ -101,6 +111,10 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
 
         logoutBtn.setText("Cerrar Sesión");
 
+        registrarGlicemiaBtn.setText("Registrar Glicemia");
+
+        verTratamientoBtn.setText("Ver Tratamiento");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -125,6 +139,12 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                                 .addComponent(logoutBtn)))))
                 .addGap(16, 16, 16))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(69, 69, 69)
+                .addComponent(registrarGlicemiaBtn)
+                .addGap(45, 45, 45)
+                .addComponent(verTratamientoBtn)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,7 +153,11 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel1)
                     .addComponent(logoutBtn))
-                .addGap(66, 66, 66)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(registrarGlicemiaBtn)
+                    .addComponent(verTratamientoBtn))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addPctBtn)
                     .addComponent(listarPctBtn)
@@ -157,5 +181,7 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
     private javax.swing.JButton listarPctBtn;
     private javax.swing.JButton logoutBtn;
     private javax.swing.JTable pctTabla;
+    private javax.swing.JButton registrarGlicemiaBtn;
+    private javax.swing.JButton verTratamientoBtn;
     // End of variables declaration//GEN-END:variables
 }

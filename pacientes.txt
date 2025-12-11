@@ -1,1 +1,3 @@
-juana;13123123;12;a1;wip;wip;wip
+juana;13123123;12;a1;wip;wip;false;false;0;0;
+Lucas;2135880878;22;123;wip;wip;false;false;0;0;
+Lucas;21.358.808-7;22;123;Sin dieta;Ninguno;false;false;0;0;
