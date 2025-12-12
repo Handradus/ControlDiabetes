@@ -4,6 +4,10 @@
  */
 package vista;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+
 /**
  *
  * @author lucas
@@ -16,8 +20,23 @@ public class PanelTratamiento extends javax.swing.JPanel {
     public PanelTratamiento() {
         initComponents();
         bloquearCampos();
+        inicializarCombosHora();
     }
-    
+    private void inicializarCombosHora() {
+    horaCombo.removeAllItems();
+    for (int h = 0; h < 24; h++) {
+        horaCombo.addItem(String.format("%02d", h));
+    }
+
+    minCombo.removeAllItems();
+    minCombo.addItem("00");
+    minCombo.addItem("15");
+    minCombo.addItem("30");
+    minCombo.addItem("45");
+}
+
+  
+  
     public javax.swing.JTextField getNombreTxt() { 
         return nombreTxt; 
     }
@@ -33,10 +52,12 @@ public class PanelTratamiento extends javax.swing.JPanel {
     public javax.swing.JTextField getMedsTxt() { 
         return medsTxt; 
     }
-    
-    public javax.swing.JTextField getSosTxt() { 
-        return sosTxt; 
+
+    public JCheckBox getSosCheck() {
+        return sosCheck;
     }
+    
+    
     
     public javax.swing.JTextField getLentaTxt() { 
         return lentaTxt; 
@@ -50,26 +71,39 @@ public class PanelTratamiento extends javax.swing.JPanel {
         return freqTxt; 
     }
     
-    public javax.swing.JTextField getHoraTxt() { 
-        return horaTxt; 
-    }
+    
     
     public javax.swing.JButton getVolverBtn() { 
         return volverBtn; 
     }
 
+    public JButton getSaveTtoBtn() {
+        return saveTtoBtn;
+    }
+    
+
     
     private void bloquearCampos() {
         nombreTxt.setEnabled(false);
         rutTxt.setEnabled(false);
-        dietaTxt.setEnabled(false);
-        medsTxt.setEnabled(false);
-        sosTxt.setEnabled(false);
-        lentaTxt.setEnabled(false);
-        dosisTxt.setEnabled(false);
-        freqTxt.setEnabled(false);
-        horaTxt.setEnabled(false);
+        
+        dietaTxt.setEnabled(true);
+        medsTxt.setEnabled(true);
+        sosCheck.setEnabled(true);
+        lentaTxt.setEnabled(true);
+        dosisTxt.setEnabled(true);
+        freqTxt.setEnabled(true);
+       
     }
+
+    public JComboBox<String> getHoraCombo() {
+        return horaCombo;
+    }
+
+    public JComboBox<String> getMinCombo() {
+        return minCombo;
+    }
+    
 
     
     /**
@@ -94,15 +128,17 @@ public class PanelTratamiento extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         lentaTxt = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        sosTxt = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         freqTxt = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         dosisTxt = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        horaTxt = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         volverBtn = new javax.swing.JButton();
+        sosCheck = new javax.swing.JCheckBox();
+        saveTtoBtn = new javax.swing.JButton();
+        horaCombo = new javax.swing.JComboBox<>();
+        minCombo = new javax.swing.JComboBox<>();
 
         jLabel1.setText("Tratamiento del paciente");
 
@@ -126,6 +162,7 @@ public class PanelTratamiento extends javax.swing.JPanel {
 
         jLabel5.setText("Dieta recomendada:");
 
+        dietaTxt.setColumns(5);
         dietaTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dietaTxtActionPerformed(evt);
@@ -134,6 +171,7 @@ public class PanelTratamiento extends javax.swing.JPanel {
 
         jLabel6.setText("Medicamentos orales:");
 
+        medsTxt.setColumns(5);
         medsTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 medsTxtActionPerformed(evt);
@@ -142,6 +180,7 @@ public class PanelTratamiento extends javax.swing.JPanel {
 
         jLabel7.setText("Datos del tratamiento:");
 
+        lentaTxt.setColumns(5);
         lentaTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lentaTxtActionPerformed(evt);
@@ -150,14 +189,9 @@ public class PanelTratamiento extends javax.swing.JPanel {
 
         jLabel8.setText("Insulina SOS");
 
-        sosTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sosTxtActionPerformed(evt);
-            }
-        });
-
         jLabel9.setText("Insulina lenta diaria:");
 
+        freqTxt.setColumns(5);
         freqTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 freqTxtActionPerformed(evt);
@@ -166,6 +200,7 @@ public class PanelTratamiento extends javax.swing.JPanel {
 
         jLabel10.setText("Dosis insulina lenta: ");
 
+        dosisTxt.setColumns(5);
         dosisTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dosisTxtActionPerformed(evt);
@@ -173,12 +208,6 @@ public class PanelTratamiento extends javax.swing.JPanel {
         });
 
         jLabel11.setText("Frecuencia controles (hrs):");
-
-        horaTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                horaTxtActionPerformed(evt);
-            }
-        });
 
         jLabel12.setText("Primer control:");
 
@@ -188,6 +217,23 @@ public class PanelTratamiento extends javax.swing.JPanel {
                 volverBtnActionPerformed(evt);
             }
         });
+
+        sosCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sosCheckActionPerformed(evt);
+            }
+        });
+
+        saveTtoBtn.setText("Guardar");
+        saveTtoBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveTtoBtnActionPerformed(evt);
+            }
+        });
+
+        horaCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        minCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -201,20 +247,25 @@ public class PanelTratamiento extends javax.swing.JPanel {
                         .addGap(61, 61, 61)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(28, 28, 28)
-                                .addComponent(rutTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addGap(28, 28, 28)
+                                        .addComponent(rutTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addGap(28, 28, 28)
+                                        .addComponent(nombreTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGap(13, 13, 13)
+                                        .addComponent(jLabel4))))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(28, 28, 28)
-                                .addComponent(nombreTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addComponent(jLabel4)))
-                        .addGap(79, 79, 79)
+                                .addGap(42, 42, 42)
+                                .addComponent(saveTtoBtn)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel6)
@@ -225,29 +276,40 @@ public class PanelTratamiento extends javax.swing.JPanel {
                                 .addGap(28, 28, 28)
                                 .addComponent(dietaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addGap(28, 28, 28)
-                                .addComponent(lentaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel8)
-                                .addGap(28, 28, 28)
-                                .addComponent(sosTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel11)
-                                .addGap(28, 28, 28)
-                                .addComponent(freqTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel10)
                                 .addGap(28, 28, 28)
                                 .addComponent(dosisTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addGap(28, 28, 28)
-                                .addComponent(horaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel7)
-                                .addGap(47, 47, 47)))))
-                .addContainerGap(48, Short.MAX_VALUE))
+                                .addGap(47, 47, 47))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addGap(28, 28, 28))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(jLabel8)
+                                        .addGap(41, 41, 41)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(sosCheck)
+                                    .addComponent(lentaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel11)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel12)
+                                        .addGap(32, 32, 32)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(horaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(minCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(freqTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(17, 17, 17)))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,7 +318,7 @@ public class PanelTratamiento extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(volverBtn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -280,9 +342,9 @@ public class PanelTratamiento extends javax.swing.JPanel {
                             .addComponent(jLabel3)
                             .addComponent(rutTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel8)
-                    .addComponent(sosTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(sosCheck))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
@@ -295,14 +357,20 @@ public class PanelTratamiento extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(freqTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(horaTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(horaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(minCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(15, 15, 15))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(saveTtoBtn)
+                        .addGap(28, 28, 28))))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {dietaTxt, dosisTxt, freqTxt, horaTxt, jLabel1, jLabel10, jLabel11, jLabel12, jLabel2, jLabel3, jLabel4, jLabel5, jLabel6, jLabel7, jLabel8, jLabel9, lentaTxt, medsTxt, nombreTxt, rutTxt, sosTxt, volverBtn});
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {dietaTxt, dosisTxt, freqTxt, jLabel1, jLabel10, jLabel11, jLabel12, jLabel2, jLabel3, jLabel4, jLabel5, jLabel6, jLabel7, jLabel8, jLabel9, lentaTxt, medsTxt, nombreTxt, rutTxt, volverBtn});
 
     }// </editor-fold>//GEN-END:initComponents
 
@@ -326,10 +394,6 @@ public class PanelTratamiento extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_lentaTxtActionPerformed
 
-    private void sosTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sosTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sosTxtActionPerformed
-
     private void freqTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_freqTxtActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_freqTxtActionPerformed
@@ -338,20 +402,24 @@ public class PanelTratamiento extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_dosisTxtActionPerformed
 
-    private void horaTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horaTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_horaTxtActionPerformed
-
     private void volverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_volverBtnActionPerformed
+
+    private void sosCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sosCheckActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sosCheckActionPerformed
+
+    private void saveTtoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveTtoBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_saveTtoBtnActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField dietaTxt;
     private javax.swing.JTextField dosisTxt;
     private javax.swing.JTextField freqTxt;
-    private javax.swing.JTextField horaTxt;
+    private javax.swing.JComboBox<String> horaCombo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -366,9 +434,11 @@ public class PanelTratamiento extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField lentaTxt;
     private javax.swing.JTextField medsTxt;
+    private javax.swing.JComboBox<String> minCombo;
     private javax.swing.JTextField nombreTxt;
     private javax.swing.JTextField rutTxt;
-    private javax.swing.JTextField sosTxt;
+    private javax.swing.JButton saveTtoBtn;
+    private javax.swing.JCheckBox sosCheck;
     private javax.swing.JButton volverBtn;
     // End of variables declaration//GEN-END:variables
 }

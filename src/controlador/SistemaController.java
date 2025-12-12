@@ -11,7 +11,9 @@ import vista.PanelMenuAdmin;
 import vista.PanelMenuCuidador;
 import vista.VentanaPrincipal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import javax.swing.Timer;
 import vista.PanelEditarPaciente;
 import vista.PanelRegistrarGlicemia;
@@ -303,17 +305,7 @@ public class SistemaController {
             return;
         }
 
-        Tratamiento t = new Tratamiento(
-            "Sin dieta",
-            "Ninguno",
-            false,
-            false,
-            0,
-            0,
-            null
-        );
-
-        Paciente p = new Paciente(nombre, rut, edad, habitacion, t);
+        Paciente p = new Paciente(nombre, rut, edad, habitacion, null);
 
         boolean agregado = gestorPacientes.agregarPaciente(p);
 
@@ -324,7 +316,7 @@ public class SistemaController {
             } catch (IOException ex) {
                 panel.mostrarError("Paciente guardado en memoria, pero falló al escribir archivo.");
             }
-        mostrarMenuCuidador(); // volver al menú
+        abrirTratamientoParaEdicion(p);
         } else {
             panel.mostrarError("Error al registrar paciente.");
         }
@@ -383,42 +375,54 @@ public class SistemaController {
     }
 
 
-    private void abrirTratamientoPaciente() {
-        int fila = panelCuidador.getPctTabla().getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(ventana, "Seleccione un paciente.");
-            return;
-        }
-
-        String rut = (String) panelCuidador.getPctTabla().getValueAt(fila, 1);
-        Paciente p = gestorPacientes.buscarPorRut(rut);
-
-        if (p == null) {
-            JOptionPane.showMessageDialog(ventana, "Paciente no encontrado.");
-            return;
-        }
-
-        panelTratamiento = new PanelTratamiento();
-
-        panelTratamiento.getNombreTxt().setText(p.getNombre());
-        panelTratamiento.getRutTxt().setText(p.getRut());
-        panelTratamiento.getDietaTxt().setText(p.getTratamiento().getDietaRecomendada());
-        panelTratamiento.getMedsTxt().setText(p.getTratamiento().getMedicamentosOrales());
-        panelTratamiento.getSosTxt().setText(String.valueOf(p.getTratamiento().isUsaInsulinaCristalinaSOS()));
-        panelTratamiento.getLentaTxt().setText(String.valueOf(p.getTratamiento().isUsaInsulinaLentaDiaria()));
-        panelTratamiento.getDosisTxt().setText(String.valueOf(p.getTratamiento().getDosisInsulinaLentaDiaria()));
-        panelTratamiento.getFreqTxt().setText(String.valueOf(p.getTratamiento().getFrecuenciaHorasControles()));
-
-        if (p.getTratamiento().getHoraPrimerControl() != null) {
-            panelTratamiento.getHoraTxt().setText(p.getTratamiento().getHoraPrimerControl().toString());
-        } else {
-            panelTratamiento.getHoraTxt().setText("No definido");
-        }
-
-        panelTratamiento.getVolverBtn().addActionListener(e -> ventana.mostrarPanel(panelCuidador));
-
-        ventana.mostrarPanel(panelTratamiento);
+   private void abrirTratamientoPaciente() {
+    int fila = panelCuidador.getPctTabla().getSelectedRow();
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(ventana, "Seleccione un paciente.");
+        return;
     }
+
+    String rut = (String) panelCuidador.getPctTabla().getValueAt(fila, 1);
+    Paciente p = gestorPacientes.buscarPorRut(rut);
+
+    if (p == null) {
+        JOptionPane.showMessageDialog(ventana, "Paciente no encontrado.");
+        return;
+    }
+
+    panelTratamiento = new PanelTratamiento();
+
+    // Datos del paciente
+    panelTratamiento.getNombreTxt().setText(p.getNombre());
+    panelTratamiento.getRutTxt().setText(p.getRut());
+
+    Tratamiento t = p.getTratamiento();
+    if (t != null) {
+        panelTratamiento.getDietaTxt().setText(t.getDietaRecomendada());
+        panelTratamiento.getMedsTxt().setText(t.getMedicamentosOrales());
+        panelTratamiento.getSosCheck().setSelected(t.isUsaInsulinaCristalinaSOS());
+        // mostramos "si"/"no" para la insulina lenta diaria
+        panelTratamiento.getLentaTxt().setText(t.isUsaInsulinaLentaDiaria() ? "si" : "no");
+        panelTratamiento.getDosisTxt().setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
+        panelTratamiento.getFreqTxt().setText(String.valueOf(t.getFrecuenciaHorasControles()));
+
+        if (t.getHoraPrimerControl() != null) {
+            LocalTime h = t.getHoraPrimerControl();
+            panelTratamiento.getHoraCombo().setSelectedItem(String.format("%02d", h.getHour()));
+            panelTratamiento.getMinCombo().setSelectedItem(String.format("%02d", h.getMinute()));
+        }
+    }
+
+    // Solo lectura: combos y botón guardar deshabilitados
+    panelTratamiento.getHoraCombo().setEnabled(false);
+    panelTratamiento.getMinCombo().setEnabled(false);
+    panelTratamiento.getSaveTtoBtn().setEnabled(false);
+
+    panelTratamiento.getVolverBtn().addActionListener(e -> ventana.mostrarPanel(panelCuidador));
+
+    ventana.mostrarPanel(panelTratamiento);
+}
+
 
     private void iniciarReloj() {
         Timer timer = new Timer(1000, e -> {
@@ -428,4 +432,109 @@ public class SistemaController {
         });
         timer.start();
     }
+    
+   private void abrirTratamientoParaEdicion(Paciente p) {
+    panelTratamiento = new PanelTratamiento();
+
+    // Datos del paciente bloqueados
+    panelTratamiento.getNombreTxt().setText(p.getNombre());
+    panelTratamiento.getRutTxt().setText(p.getRut());
+    panelTratamiento.getNombreTxt().setEditable(false);
+    panelTratamiento.getRutTxt().setEditable(false);
+
+    // Si ya tenía tratamiento, precargamos
+    if (p.getTratamiento() != null) {
+        Tratamiento t = p.getTratamiento();
+        panelTratamiento.getDietaTxt().setText(t.getDietaRecomendada());
+        panelTratamiento.getMedsTxt().setText(t.getMedicamentosOrales());
+        panelTratamiento.getSosCheck().setSelected(t.isUsaInsulinaCristalinaSOS());
+        panelTratamiento.getLentaTxt().setText(t.isUsaInsulinaLentaDiaria() ? "si" : "no");
+        panelTratamiento.getDosisTxt().setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
+        panelTratamiento.getFreqTxt().setText(String.valueOf(t.getFrecuenciaHorasControles()));
+        if (t.getHoraPrimerControl() != null) {
+            LocalTime h = t.getHoraPrimerControl();
+            panelTratamiento.getHoraCombo().setSelectedItem(String.format("%02d", h.getHour()));
+            panelTratamiento.getMinCombo().setSelectedItem(String.format("%02d", h.getMinute()));
+        }
+    }
+
+    panelTratamiento.getSaveTtoBtn().addActionListener(e -> {
+        try {
+            String dieta = panelTratamiento.getDietaTxt().getText().trim();
+            String meds  = panelTratamiento.getMedsTxt().getText().trim();
+
+            // checkbox: usa isSelected()
+            boolean usaSos = panelTratamiento.getSosCheck().isSelected();
+
+            // texto "si"/"no" para insulina lenta diaria
+            String lentaStr = panelTratamiento.getLentaTxt().getText().trim().toLowerCase();
+            boolean usaLenta;
+            if (lentaStr.equals("si") || lentaStr.equals("sí") || lentaStr.equals("1") || lentaStr.equals("true")) {
+                usaLenta = true;
+            } else if (lentaStr.equals("no") || lentaStr.equals("0") || lentaStr.equals("false") || lentaStr.isEmpty()) {
+                usaLenta = false;
+            } else {
+                throw new IllegalArgumentException("Insulina lenta diaria debe ser 'si' o 'no'.");
+            }
+
+            int dosisLenta = Integer.parseInt(panelTratamiento.getDosisTxt().getText().trim());
+            int frecuencia = Integer.parseInt(panelTratamiento.getFreqTxt().getText().trim());
+
+            // Hora desde los combos
+            String hSel = (String) panelTratamiento.getHoraCombo().getSelectedItem();
+            String mSel = (String) panelTratamiento.getMinCombo().getSelectedItem();
+            LocalTime horaPrimerControl = LocalTime.of(
+                    Integer.parseInt(hSel),
+                    Integer.parseInt(mSel)
+            );
+
+            Tratamiento nuevoT = new Tratamiento(
+                    dieta,
+                    meds,
+                    usaSos,
+                    usaLenta,
+                    dosisLenta,
+                    frecuencia,
+                    horaPrimerControl
+            );
+
+            p.setTratamiento(nuevoT);
+
+            try {
+                gestorPacientes.guardarPacientes("pacientes.txt");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(
+                        ventana,
+                        "Tratamiento guardado en memoria, pero error al escribir archivo.",
+                        "Advertencia",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
+
+            JOptionPane.showMessageDialog(ventana, "Tratamiento guardado correctamente.");
+            ventana.mostrarPanel(panelCuidador);
+            listarPacientes();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(
+                    ventana,
+                    "Revisa los campos numéricos (dosis y frecuencia).",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(
+                    ventana,
+                    ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    });
+
+    panelTratamiento.getVolverBtn().addActionListener(e -> ventana.mostrarPanel(panelCuidador));
+
+    ventana.mostrarPanel(panelTratamiento);
+}
+
 }
