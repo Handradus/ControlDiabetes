@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import javax.swing.JCheckBox;
 import javax.swing.Timer;
 import vista.PanelEditarPaciente;
 import vista.PanelRegistrarGlicemia;
@@ -26,6 +27,8 @@ public class SistemaController {
     private final VentanaPrincipal ventana;
     private final GestorPacientes gestorPacientes;
     private final GestorUsuarios gestorUsuarios;
+    private Usuario usuarioLogueado;
+
     
     private PanelMenuAdmin panelAdmin;
     private PanelMenuCuidador panelCuidador;
@@ -47,7 +50,8 @@ public class SistemaController {
         
         try {
             gestorUsuarios.cargarUsuarios("usuarios.txt");
-            gestorPacientes.cargarPacientes("pacientes.txt");
+            gestorPacientes.cargarTodo("pacientes.txt", "glicemias.txt");
+
         } catch (IOException e) {
         
             System.out.println("No se pudieron cargar datos: " + e.getMessage());
@@ -63,14 +67,17 @@ public class SistemaController {
 
     private void mostrarLogin() {
         LoginPanel panelLogin = new LoginPanel();
-
+        
         panelLogin.getIngresarBtn().addActionListener(e -> {
             String nombreUsuario = panelLogin.getUserTxt().getText();
             String pass = new String(panelLogin.getPassTxt().getPassword());
+            
 
             Usuario u = gestorUsuarios.login(nombreUsuario, pass);
 
             if (u != null) {
+            
+            this.usuarioLogueado = u;
                 if (u instanceof Admin) {
                     mostrarMenuAdmin();
                 } else if (u instanceof Cuidador) {
@@ -179,7 +186,9 @@ public class SistemaController {
                 return;
             }
             try {
-            gestorPacientes.guardarPacientes("pacientes.txt");  // usa el nombre real que estés usando
+            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+
+            
             } catch (IOException ex1) {
                 JOptionPane.showMessageDialog(ventana, "Error al guardar pacientes: " + ex1.getMessage());
             
@@ -312,7 +321,8 @@ public class SistemaController {
         if (agregado) {
             panel.mostrarInfo("Paciente registrado correctamente.");
             try {
-                gestorPacientes.guardarPacientes("pacientes.txt");
+                gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+
             } catch (IOException ex) {
                 panel.mostrarError("Paciente guardado en memoria, pero falló al escribir archivo.");
             }
@@ -331,6 +341,7 @@ public class SistemaController {
 
         String rut = (String) panelCuidador.getPctTabla().getValueAt(fila, 1);
         Paciente p = gestorPacientes.buscarPorRut(rut);
+        
 
         if (p == null) {
             JOptionPane.showMessageDialog(ventana, "No se encontró el paciente.");
@@ -338,9 +349,32 @@ public class SistemaController {
         }
 
         panelRegistrarGlicemia = new PanelRegistrarGlicemia();
+        
+        //cambia lbl a nombre de paciente usando el metodo en la vista de glicemia
+        panelRegistrarGlicemia.setNombrePaciente(p.getNombre());
+        
+        //Tabla para listar glicemia
+        
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Fecha");
+        modelo.addColumn("Valor");
+        modelo.addColumn("Registrado por");
+
+        for (RegistroGlicemia r : p.getHistorialGlicemias()) {
+            modelo.addRow(new Object[]{
+                    r.getFechaHora(),
+                    r.getValor(),
+                    r.getRegistrado()
+            });
+        }
+
+        panelRegistrarGlicemia.getHgtTabla().setModel(modelo);
+
 
         panelRegistrarGlicemia.getRegistrarBtn().addActionListener(e -> {
             String valorStr = panelRegistrarGlicemia.getValorTxt().getText();
+            String registrado = usuarioLogueado.getNombreUsuario();
+
             int valor;
 
             try {
@@ -353,14 +387,14 @@ public class SistemaController {
             DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
             String fecha = LocalDateTime.now().format(f);
 
-            RegistroGlicemia reg = new RegistroGlicemia(fecha, valor);
+            RegistroGlicemia reg = new RegistroGlicemia(fecha, valor,registrado);
 
             p.agregarRegistroGlicemia(reg);
 
             panelRegistrarGlicemia.mostrarInfo("Glicemia registrada.");
 
             try {
-                gestorPacientes.guardarPacientes("pacientes.txt");
+                gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
             } catch (IOException ex2) {
                 panelRegistrarGlicemia.mostrarError("Guardado en memoria, pero error al escribir archivo.");
             }
@@ -375,7 +409,8 @@ public class SistemaController {
     }
 
 
-   private void abrirTratamientoPaciente() {
+private void abrirTratamientoPaciente() {
+
     int fila = panelCuidador.getPctTabla().getSelectedRow();
     if (fila == -1) {
         JOptionPane.showMessageDialog(ventana, "Seleccione un paciente.");
@@ -391,37 +426,66 @@ public class SistemaController {
     }
 
     panelTratamiento = new PanelTratamiento();
+    JCheckBox chkLenta = panelTratamiento.getInsulinaCheck();
+
+  
+    chkLenta.addActionListener(e -> {
+        // Si está en modo lectura, no hacer nada
+        if (!chkLenta.isEnabled()) return;
+
+        boolean activo = chkLenta.isSelected();
+        panelTratamiento.habilitarDosisLenta(activo);
+
+        if (!activo) {
+            panelTratamiento.limpiarDosis();
+        }
+    });
+
+    panelTratamiento.modoLectura();
 
     // Datos del paciente
     panelTratamiento.getNombreTxt().setText(p.getNombre());
     panelTratamiento.getRutTxt().setText(p.getRut());
 
+    //Carga tto
     Tratamiento t = p.getTratamiento();
     if (t != null) {
         panelTratamiento.getDietaTxt().setText(t.getDietaRecomendada());
         panelTratamiento.getMedsTxt().setText(t.getMedicamentosOrales());
         panelTratamiento.getSosCheck().setSelected(t.isUsaInsulinaCristalinaSOS());
-        // mostramos "si"/"no" para la insulina lenta diaria
-        panelTratamiento.getLentaTxt().setText(t.isUsaInsulinaLentaDiaria() ? "si" : "no");
-        panelTratamiento.getDosisTxt().setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
-        panelTratamiento.getFreqTxt().setText(String.valueOf(t.getFrecuenciaHorasControles()));
+
+        chkLenta.setSelected(t.isUsaInsulinaLentaDiaria());
+
+        panelTratamiento.getDosisTxt()
+                .setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
+        panelTratamiento.getFreqTxt()
+                .setText(String.valueOf(t.getFrecuenciaHorasControles()));
 
         if (t.getHoraPrimerControl() != null) {
             LocalTime h = t.getHoraPrimerControl();
-            panelTratamiento.getHoraCombo().setSelectedItem(String.format("%02d", h.getHour()));
-            panelTratamiento.getMinCombo().setSelectedItem(String.format("%02d", h.getMinute()));
+            panelTratamiento.getHoraCombo()
+                    .setSelectedItem(String.format("%02d", h.getHour()));
+            panelTratamiento.getMinCombo()
+                    .setSelectedItem(String.format("%02d", h.getMinute()));
         }
     }
 
-    // Solo lectura: combos y botón guardar deshabilitados
-    panelTratamiento.getHoraCombo().setEnabled(false);
-    panelTratamiento.getMinCombo().setEnabled(false);
-    panelTratamiento.getSaveTtoBtn().setEnabled(false);
+    
+    panelTratamiento.habilitarDosisLenta(chkLenta.isSelected());
 
-    panelTratamiento.getVolverBtn().addActionListener(e -> ventana.mostrarPanel(panelCuidador));
+   
+    panelTratamiento.getEditarBtn().addActionListener(e -> {
+        panelTratamiento.modoEdicion(); // habilita campos y checkbox
+        panelTratamiento.habilitarDosisLenta(chkLenta.isSelected());
+    });
+
+   
+    panelTratamiento.getVolverBtn()
+            .addActionListener(e -> ventana.mostrarPanel(panelCuidador));
 
     ventana.mostrarPanel(panelTratamiento);
 }
+
 
 
     private void iniciarReloj() {
@@ -434,59 +498,75 @@ public class SistemaController {
     }
     
    private void abrirTratamientoParaEdicion(Paciente p) {
-    panelTratamiento = new PanelTratamiento();
 
-    // Datos del paciente bloqueados
+    panelTratamiento = new PanelTratamiento();
+    JCheckBox chkLenta = panelTratamiento.getInsulinaCheck();
+
+    // Datos del paciente (solo lectura)
     panelTratamiento.getNombreTxt().setText(p.getNombre());
     panelTratamiento.getRutTxt().setText(p.getRut());
     panelTratamiento.getNombreTxt().setEditable(false);
     panelTratamiento.getRutTxt().setEditable(false);
 
-    // Si ya tenía tratamiento, precargamos
+    // ===== Precarga tratamiento si existe =====
     if (p.getTratamiento() != null) {
         Tratamiento t = p.getTratamiento();
+
         panelTratamiento.getDietaTxt().setText(t.getDietaRecomendada());
         panelTratamiento.getMedsTxt().setText(t.getMedicamentosOrales());
         panelTratamiento.getSosCheck().setSelected(t.isUsaInsulinaCristalinaSOS());
-        panelTratamiento.getLentaTxt().setText(t.isUsaInsulinaLentaDiaria() ? "si" : "no");
-        panelTratamiento.getDosisTxt().setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
-        panelTratamiento.getFreqTxt().setText(String.valueOf(t.getFrecuenciaHorasControles()));
+
+        chkLenta.setSelected(t.isUsaInsulinaLentaDiaria());
+        panelTratamiento.getDosisTxt()
+                .setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
+        panelTratamiento.getFreqTxt()
+                .setText(String.valueOf(t.getFrecuenciaHorasControles()));
+
         if (t.getHoraPrimerControl() != null) {
             LocalTime h = t.getHoraPrimerControl();
-            panelTratamiento.getHoraCombo().setSelectedItem(String.format("%02d", h.getHour()));
-            panelTratamiento.getMinCombo().setSelectedItem(String.format("%02d", h.getMinute()));
+            panelTratamiento.getHoraCombo()
+                    .setSelectedItem(String.format("%02d", h.getHour()));
+            panelTratamiento.getMinCombo()
+                    .setSelectedItem(String.format("%02d", h.getMinute()));
         }
     }
 
+    // ===== Estado inicial del campo dosis =====
+    panelTratamiento.habilitarDosisLenta(chkLenta.isSelected());
+
+    // ===== Listener del checkbox (SIEMPRE) =====
+    chkLenta.addActionListener(e -> {
+        boolean activo = chkLenta.isSelected();
+        panelTratamiento.habilitarDosisLenta(activo);
+        if (!activo) {
+            panelTratamiento.limpiarDosis();
+        }
+    });
+
+    // ===== Guardar tratamiento =====
     panelTratamiento.getSaveTtoBtn().addActionListener(e -> {
         try {
             String dieta = panelTratamiento.getDietaTxt().getText().trim();
             String meds  = panelTratamiento.getMedsTxt().getText().trim();
 
-            // checkbox: usa isSelected()
-            boolean usaSos = panelTratamiento.getSosCheck().isSelected();
+            boolean usaSos   = panelTratamiento.getSosCheck().isSelected();
+            boolean usaLenta = chkLenta.isSelected();
 
-            // texto "si"/"no" para insulina lenta diaria
-            String lentaStr = panelTratamiento.getLentaTxt().getText().trim().toLowerCase();
-            boolean usaLenta;
-            if (lentaStr.equals("si") || lentaStr.equals("sí") || lentaStr.equals("1") || lentaStr.equals("true")) {
-                usaLenta = true;
-            } else if (lentaStr.equals("no") || lentaStr.equals("0") || lentaStr.equals("false") || lentaStr.isEmpty()) {
-                usaLenta = false;
-            } else {
-                throw new IllegalArgumentException("Insulina lenta diaria debe ser 'si' o 'no'.");
+            int dosisLenta = 0;
+            if (usaLenta) {
+                dosisLenta = Integer.parseInt(
+                        panelTratamiento.getDosisTxt().getText().trim()
+                );
             }
 
-            int dosisLenta = Integer.parseInt(panelTratamiento.getDosisTxt().getText().trim());
-            int frecuencia = Integer.parseInt(panelTratamiento.getFreqTxt().getText().trim());
+            int frecuencia = Integer.parseInt(
+                    panelTratamiento.getFreqTxt().getText().trim()
+            );
 
-            // Hora desde los combos
             String hSel = (String) panelTratamiento.getHoraCombo().getSelectedItem();
             String mSel = (String) panelTratamiento.getMinCombo().getSelectedItem();
-            LocalTime horaPrimerControl = LocalTime.of(
-                    Integer.parseInt(hSel),
-                    Integer.parseInt(mSel)
-            );
+            LocalTime horaPrimerControl =
+                    LocalTime.of(Integer.parseInt(hSel), Integer.parseInt(mSel));
 
             Tratamiento nuevoT = new Tratamiento(
                     dieta,
@@ -499,17 +579,7 @@ public class SistemaController {
             );
 
             p.setTratamiento(nuevoT);
-
-            try {
-                gestorPacientes.guardarPacientes("pacientes.txt");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(
-                        ventana,
-                        "Tratamiento guardado en memoria, pero error al escribir archivo.",
-                        "Advertencia",
-                        JOptionPane.WARNING_MESSAGE
-                );
-            }
+            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
 
             JOptionPane.showMessageDialog(ventana, "Tratamiento guardado correctamente.");
             ventana.mostrarPanel(panelCuidador);
@@ -518,23 +588,25 @@ public class SistemaController {
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(
                     ventana,
-                    "Revisa los campos numéricos (dosis y frecuencia).",
+                    "Revisa dosis y frecuencia.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
-        } catch (IllegalArgumentException ex) {
+        } catch (IOException ex) {
             JOptionPane.showMessageDialog(
                     ventana,
-                    ex.getMessage(),
+                    "Error al guardar archivos.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
         }
     });
 
-    panelTratamiento.getVolverBtn().addActionListener(e -> ventana.mostrarPanel(panelCuidador));
+    panelTratamiento.getVolverBtn()
+            .addActionListener(e -> ventana.mostrarPanel(panelCuidador));
 
     ventana.mostrarPanel(panelTratamiento);
-}
+}      
+           
 
 }

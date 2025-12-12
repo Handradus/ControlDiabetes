@@ -130,7 +130,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="registrarGlicemiaBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Registrar Glicemia"/>
+        <Property name="text" type="java.lang.String" value="Glicemias"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="verTratamientoBtn">

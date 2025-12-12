@@ -111,7 +111,7 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
 
         logoutBtn.setText("Cerrar Sesión");
 
-        registrarGlicemiaBtn.setText("Registrar Glicemia");
+        registrarGlicemiaBtn.setText("Glicemias");
 
         verTratamientoBtn.setText("Ver Tratamiento");
 

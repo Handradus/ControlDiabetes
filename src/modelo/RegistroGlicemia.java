@@ -4,11 +4,19 @@ public class RegistroGlicemia {
 
     private String fechaHora;
     private int valor;
+    private String registrado;
 
-    public RegistroGlicemia(String fechaHora, int valor) {
+    public RegistroGlicemia(String fechaHora, int valor, String registrado) {
         this.setFechaHora(fechaHora);
         this.setValor(valor);
+        this.setRegistrado(registrado);
     }
+
+    public void setRegistrado(String registrado) {
+        this.registrado = registrado;
+    }
+    
+    
 
     public void setFechaHora(String fechaHora)
     {
@@ -33,6 +41,11 @@ public class RegistroGlicemia {
     public String getFechaHora(){
         return fechaHora;
     }
+
+    public String getRegistrado() {
+        return registrado;
+    }
+    
 
     public int getValor() {
         return valor;

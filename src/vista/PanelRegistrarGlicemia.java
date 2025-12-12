@@ -4,6 +4,9 @@
  */
 package vista;
 
+import javax.swing.JLabel;
+import javax.swing.JTable;
+
 /**
  *
  * @author lucas
@@ -16,11 +19,21 @@ public class PanelRegistrarGlicemia extends javax.swing.JPanel {
     public PanelRegistrarGlicemia() {
         initComponents();
     }
-    
-    public javax.swing.JTextField getRutTxt() {
-        return rutTxt;
+
+    public JTable getHgtTabla() {
+        return hgtTabla;
     }
 
+    public void setNombreLbl(JLabel nombreLbl) {
+        this.nombreLbl = nombreLbl;
+    }
+    
+    public void setNombrePaciente(String nombre) {
+    nombreLbl.setText(nombre);
+}
+
+    
+    
     public javax.swing.JTextField getValorTxt() {
         return valorTxt;
     }
@@ -53,23 +66,17 @@ public class PanelRegistrarGlicemia extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        rutTxt = new javax.swing.JTextField();
+        nombreLbl = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         valorTxt = new javax.swing.JTextField();
         volverBtn = new javax.swing.JButton();
         registrarBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        hgtTabla = new javax.swing.JTable();
 
         jLabel1.setText("Registrar glicemia");
 
-        jLabel2.setText("RUT paciente:");
-
-        rutTxt.setColumns(12);
-        rutTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rutTxtActionPerformed(evt);
-            }
-        });
+        nombreLbl.setText("RUT paciente:");
 
         jLabel3.setText("Valor glicemia:");
 
@@ -94,30 +101,46 @@ public class PanelRegistrarGlicemia extends javax.swing.JPanel {
             }
         });
 
+        hgtTabla.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(hgtTabla);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(volverBtn)
-                        .addGap(77, 77, 77)
-                        .addComponent(jLabel1))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(volverBtn)
+                                .addGap(77, 77, 77)
+                                .addComponent(jLabel1))
+                            .addComponent(nombreLbl))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(109, 109, 109)
-                        .addComponent(registrarBtn))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addGap(30, 30, 30)
-                            .addComponent(valorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addGap(36, 36, 36)
-                            .addComponent(rutTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(38, 208, Short.MAX_VALUE))
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(valorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)
+                        .addComponent(registrarBtn)
+                        .addGap(152, 152, 152))))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(15, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(45, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,23 +149,21 @@ public class PanelRegistrarGlicemia extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(volverBtn))
-                .addGap(61, 61, 61)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(rutTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(39, 39, 39)
+                .addGap(18, 18, 18)
+                .addComponent(nombreLbl)
+                .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(valorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(47, 47, 47)
-                .addComponent(registrarBtn)
-                .addContainerGap(72, Short.MAX_VALUE))
+                    .addComponent(valorTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(registrarBtn))
+                .addContainerGap(205, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(161, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(13, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void rutTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rutTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rutTxtActionPerformed
 
     private void valorTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_valorTxtActionPerformed
         // TODO add your handling code here:
@@ -158,11 +179,12 @@ public class PanelRegistrarGlicemia extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable hgtTabla;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel nombreLbl;
     private javax.swing.JButton registrarBtn;
-    private javax.swing.JTextField rutTxt;
     private javax.swing.JTextField valorTxt;
     private javax.swing.JButton volverBtn;
     // End of variables declaration//GEN-END:variables

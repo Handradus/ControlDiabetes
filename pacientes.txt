@@ -2,6 +2,11 @@ juana;13123123;12;a1;wip;wip;false;false;0;0;
 Lucas;2135880878;22;123;wip;wip;false;false;0;0;
 Lucas;21.358.808-7;22;123;Sin dieta;Ninguno;false;false;0;0;
 maria;219210;23;aw2;;;false;false;0;0;
-salsa;1231;21;dd1;blanda;metformina;false;false;10;1;13:00
+salsa;1231;21;dd1;blanda;metformina;false;false;0;1;13:00
 ad;2313;12;dada1;;;false;false;0;0;
 1sdada;12133123;12;qw1;;;false;false;0;0;
+rew;12341;0;aw1;blanda;adada;false;true;0;1;01:00
+asda;12;0;dsa1|;adad;adadad;false;false;0;2;01:00
+1213;qadad;0;123123;;;false;false;0;0;
+dada;adad;12;adad;;;false;false;0;0;
+adada;123123;0;dada1;normal;nada;false;false;0;1;01:30
