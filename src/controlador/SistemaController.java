@@ -502,7 +502,7 @@ private void listarPacientes() {
     }
 
 private void abrirRegistrarGlicemia() {
-
+    
     int fila = panelCuidador.getPctTabla().getSelectedRow();
     if (fila == -1) {
         JOptionPane.showMessageDialog(ventana, "Seleccione un paciente primero.");
@@ -569,6 +569,9 @@ private void abrirRegistrarGlicemia() {
 
     // Avanza próximo control (si aplica)
     p.avanzarProximoControlTrasRegistro();
+    
+    Tratamiento t = p.getTratamiento();
+
 
     // Mensaje visual
     if (valor < 70) {
@@ -576,11 +579,26 @@ private void abrirRegistrarGlicemia() {
             "⚠ Hipoglicemia (" + valor + ").\nAdministrar carbohidratos y avisar."
         );
     } else if (valor > 300) {
-        panelRegistrarGlicemia.mostrarError(
-            "🚨 Glicemia CRÍTICA (" + valor + ").\nRecomendación: llamar a SAMU."
-        );
+
+    String mensaje = "🚨 GLICEMIA CRÍTICA (" + valor + ").\n";
+
+    if (t != null && t.isUsaInsulinaCristalinaSOS()) {
+        mensaje += "\nPAUTA INSULINA SOS:\n" + t.getPautaInsulinaSOS();
+        mensaje += "\nRecomendación: avisar de inmediato / considerar llamado a SAMU.";
+    } else {
+        mensaje += "\nRecomendación: avisar de inmediato / considerar llamado a SAMU.";
+    }
+
+    panelRegistrarGlicemia.mostrarError(mensaje);
     } else if (valor > 180) {
-        panelRegistrarGlicemia.mostrarInfo("Glicemia elevada (" + valor + ").");
+
+    String mensaje = "Glicemia elevada (" + valor + ").";
+
+    if (t != null && t.isUsaInsulinaCristalinaSOS()) {
+        mensaje += "\n\nPAUTA INSULINA SOS:\n" + t.getPautaInsulinaSOS();
+    }
+
+    panelRegistrarGlicemia.mostrarInfo(mensaje);
     } else {
         panelRegistrarGlicemia.mostrarInfo("Glicemia registrada (" + valor + ").");
     }

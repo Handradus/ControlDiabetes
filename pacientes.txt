@@ -11,3 +11,4 @@ asda;12;0;dsa1|;adad;adadad;false;false;0;2;01:00;
 dada;adad;12;adad;;;false;false;0;0;;
 adada;123123;0;dada1;normal;nada;false;false;0;1;01:30;
 arf;123;14;qq2;;;false;false;0;0;;
+chi;1542;12;ad1;normal;adad1;true;true;10;1;20:00;+300 = +1 uic
