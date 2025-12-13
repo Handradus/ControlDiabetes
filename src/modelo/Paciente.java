@@ -204,6 +204,7 @@ public class Paciente {
 
     proximoControl = proximoControl.plusHours(freq);
 
+    // por si estaba atrasado (ej: el sistema estuvo cerrado), empújalo al futuro
     LocalDateTime ahora = LocalDateTime.now();
     while (!proximoControl.isAfter(ahora)) {
         proximoControl = proximoControl.plusHours(freq);
