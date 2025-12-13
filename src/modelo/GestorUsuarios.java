@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package modelo;
 
 import java.io.BufferedReader;
@@ -19,8 +14,6 @@ public class GestorUsuarios {
 
     public GestorUsuarios() {
         this.usuarios = new ArrayList<>();
-
-        // Crear admin por defecto
         Admin admin = new Admin("admin", "1234");
         usuarios.add(admin);
     }

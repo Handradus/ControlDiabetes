@@ -25,18 +25,13 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
     
         public PanelMenuCuidador() {
     initComponents();
-
-    // ===== CONTENEDOR DE ALERTAS (SIN TOCAR GROUPLAYOUT) =====
     panelAlertas = new javax.swing.JPanel(new java.awt.BorderLayout());
     panelAlertas.add(alertasScroll, java.awt.BorderLayout.CENTER);
 
-    // ⚠️ NO SE OCULTA EL SCROLL, SOLO SE DESHABILITA
     activoCheck.setEnabled(false);
 
     alertasScroll.setEnabled(false);
     alertasTabla.setEnabled(false);
-
-    // ===== MODELO FIJO PARA ALERTAS =====
     alertasTabla.setModel(new javax.swing.table.DefaultTableModel(
         new Object[][]{},
         new String[]{"Fecha", "Hora", "Tipo"}
@@ -55,7 +50,7 @@ public void habilitarPanelPaciente(boolean habilitado) {
     if (!habilitado) {
         DefaultTableModel modelo =
             (DefaultTableModel) alertasTabla.getModel();
-        modelo.setRowCount(0); // limpia alertas
+        modelo.setRowCount(0);
     }
 }
 
@@ -146,10 +141,10 @@ public void aplicarRenderPacientes(java.util.List<Paciente> pacientes) {
     
     public void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(
-                this,               // Componente padre (la propia ventana)
-                mensaje,            // Texto del error
-                "Error",            // Título de la ventana de diálogo
-                JOptionPane.ERROR_MESSAGE  // Icono de error
+                this,
+                mensaje,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
         );
     }
     

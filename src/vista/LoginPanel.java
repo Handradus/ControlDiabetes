@@ -1,22 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package vista;
 
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-/**
- *
- * @author Diavuru
- */
 public class LoginPanel extends javax.swing.JPanel {
-
-    /**
-     * Creates new form LoginPanel
-     */
     public LoginPanel() {
         initComponents();
     }
@@ -32,7 +20,6 @@ public class LoginPanel extends javax.swing.JPanel {
     public JTextField getUserTxt() {
         return userTxt;
     }
-    
     
 
     /**

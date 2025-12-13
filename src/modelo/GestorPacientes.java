@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,10 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
-/**
- *
- * @author Diavuru
- */
 
 
 public class GestorPacientes {
@@ -26,8 +18,6 @@ public class GestorPacientes {
 
     public boolean agregarPaciente(Paciente p) {
         if (p == null) return false;
-
-        // evitar duplicados por RUT
         if (buscarPorRut(p.getRut()) != null) {
             System.err.println("Ya existe un paciente con ese RUT.");
             return false;
@@ -67,7 +57,7 @@ public class GestorPacientes {
             for (Paciente p : listaPacientes) {
                 Tratamiento t = p.getTratamiento();
                 String pautaSOS = (t != null && t.getPautaInsulinaSOS() != null) ? t.getPautaInsulinaSOS() : "";
-                pautaSOS = pautaSOS.replace(";", ","); // para no romper el split
+                pautaSOS = pautaSOS.replace(";", ",");
 
 
 
@@ -185,8 +175,6 @@ public class GestorPacientes {
 }
     
     public void cargarGlicemias(String archivoGlicemias) throws IOException {
-
-    // Limpia para no duplicar si recargas
     for (Paciente p : listaPacientes) {
         p.getHistorialGlicemias().clear();
     }

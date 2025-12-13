@@ -376,8 +376,6 @@ private void mostrarEditarPaciente(Paciente paciente) {
        
     private void crearCuidador() {
                 
-          
-        // Usamos el panel de admin actual
         String nombre = panelAdmin.getNombreCTxt().getText().trim();
         String pass = new String(panelAdmin.getPassTxt().getPassword()).trim();
 
@@ -404,7 +402,7 @@ private void mostrarEditarPaciente(Paciente paciente) {
             panelAdmin.getPassTxt().setText("");
             
             try {
-        gestorUsuarios.archivar("usuarios.txt");  // 👈 AHORA sí guardas usuarios
+        gestorUsuarios.archivar("usuarios.txt");
             } catch (IOException ex) {
                 panelAdmin.mostrarError("Cuidador creado en memoria, pero falló al escribir archivo de usuarios.");
             }
@@ -461,7 +459,6 @@ private void listarPacientes() {
 }
 
     private void cerrarSesion() {
-        // No se cierra la ventana principal, solo volvemos al login
         mostrarLogin();
     }
 
@@ -567,10 +564,8 @@ private void abrirRegistrarGlicemia() {
 
     p.agregarRegistroGlicemia(reg);
 
-    // Avanza próximo control (si aplica)
     p.avanzarProximoControlTrasRegistro();
 
-    // Mensaje visual
     if (valor < 70) {
         panelRegistrarGlicemia.mostrarError(
             "⚠ Hipoglicemia (" + valor + ").\nAdministrar carbohidratos y avisar."
@@ -594,7 +589,7 @@ private void abrirRegistrarGlicemia() {
 
     ventana.mostrarPanel(panelCuidador);
     listarPacientes();
-    cargarAlertasPaciente(p); // ✅ para refrescar el “próximo control” al volver
+    cargarAlertasPaciente(p);
 });
 
 
@@ -682,27 +677,23 @@ private void abrirTratamientoParaEdicion(Paciente p) {
     JCheckBox chkLenta = panelTratamiento.getInsulinaCheck();
     JCheckBox chkSos   = panelTratamiento.getSosCheck();
 
-    // Datos paciente (solo lectura)
     panelTratamiento.getNombreTxt().setText(p.getNombre());
     panelTratamiento.getRutTxt().setText(p.getRut());
     panelTratamiento.getNombreTxt().setEditable(false);
     panelTratamiento.getRutTxt().setEditable(false);
 
-    // ===== Precarga tratamiento si existe =====
     if (p.getTratamiento() != null) {
         Tratamiento t = p.getTratamiento();
 
         panelTratamiento.getDietaTxt().setText(t.getDietaRecomendada());
         panelTratamiento.getMedsTxt().setText(t.getMedicamentosOrales());
 
-        // SOS + pauta (✅ desde t)
         chkSos.setSelected(t.isUsaInsulinaCristalinaSOS());
         panelTratamiento.habilitarPautaSOS(chkSos.isSelected());
         panelTratamiento.getPautaSosTxt().setText(
             t.getPautaInsulinaSOS() != null ? t.getPautaInsulinaSOS() : ""
         );
 
-        // Insulina lenta
         chkLenta.setSelected(t.isUsaInsulinaLentaDiaria());
         panelTratamiento.getDosisTxt().setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
         panelTratamiento.getFreqTxt().setText(String.valueOf(t.getFrecuenciaHorasControles()));
@@ -713,28 +704,21 @@ private void abrirTratamientoParaEdicion(Paciente p) {
             panelTratamiento.getMinCombo().setSelectedItem(String.format("%02d", h.getMinute()));
         }
     } else {
-        // si no hay tratamiento, igual dejar pauta deshabilitada por defecto
         panelTratamiento.habilitarPautaSOS(chkSos.isSelected());
     }
-
-    // ===== Estado inicial del campo dosis =====
     panelTratamiento.habilitarDosisLenta(chkLenta.isSelected());
 
-    // ===== Listener insulina lenta =====
     chkLenta.addActionListener(e -> {
         boolean activo = chkLenta.isSelected();
         panelTratamiento.habilitarDosisLenta(activo);
         if (!activo) panelTratamiento.limpiarDosis();
     });
-
-    // ===== Listener SOS (✅ habilita/limpia pauta) =====
     chkSos.addActionListener(e -> {
         boolean activo = chkSos.isSelected();
         panelTratamiento.habilitarPautaSOS(activo);
         if (!activo) panelTratamiento.getPautaSosTxt().setText("");
     });
 
-    // ===== Guardar tratamiento =====
     panelTratamiento.getSaveTtoBtn().addActionListener(e -> {
         try {
             String dieta = panelTratamiento.getDietaTxt().getText().trim();
@@ -743,7 +727,6 @@ private void abrirTratamientoParaEdicion(Paciente p) {
             boolean usaSos   = chkSos.isSelected();
             boolean usaLenta = chkLenta.isSelected();
 
-            // ✅ leer pauta al guardar
             String pautaSOS = usaSos ? panelTratamiento.getPautaSosTxt().getText().trim() : "";
 
             int dosisLenta = 0;
@@ -792,20 +775,18 @@ private void abrirTratamientoParaEdicion(Paciente p) {
    private void cargarAlertasPaciente(Paciente p) {
 
     DefaultTableModel modelo = (DefaultTableModel) panelCuidador.getAlertasTabla().getModel();
-    modelo.setRowCount(0); // limpia filas
+    modelo.setRowCount(0);
 
     if (p == null) {
         modelo.addRow(new Object[]{"-", "-", "Sin paciente seleccionado"});
         return;
     }
 
-    // Si no hay proximo control, muestra mensaje
     if (p.getProximoControl() == null) {
         modelo.addRow(new Object[]{"-", "-", "No hay próximo control agendado"});
         return;
     }
 
-    // Formatear fecha/hora
     DateTimeFormatter fFecha = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     DateTimeFormatter fHora  = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -828,7 +809,7 @@ private void abrirTratamientoParaEdicion(Paciente p) {
         DefaultTableModel modelo =
             (DefaultTableModel) panelCuidador.getAlertasTabla().getModel();
 
-        modelo.setRowCount(0); // Limpia la tabla
+        modelo.setRowCount(0);
 
         if (p.getAlertas() == null) return;
 
