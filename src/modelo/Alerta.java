@@ -15,12 +15,14 @@ public class Alerta {
         this.setTipo(tipo);
         this.setMensaje(mensaje);
         this.setPaciente(paciente);
-        this.setAtendida(false);
+        this.atendida = false;
 
         LocalDateTime ahora = LocalDateTime.now();
         DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         this.fechaHora = ahora.format(f);
     }
+
+    // ===== Setters =====
 
     public void setTipo(String tipo) {
         if (tipo != null && !tipo.trim().isEmpty()) {
@@ -45,6 +47,8 @@ public class Alerta {
     public void setAtendida(boolean atendida) {
         this.atendida = atendida;
     }
+
+    // ===== Getters =====
 
     public String getTipo() {
         return tipo;

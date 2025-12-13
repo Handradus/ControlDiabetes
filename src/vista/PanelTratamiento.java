@@ -1,22 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package vista;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 
-/**
- *
- * @author lucas
- */
 public class PanelTratamiento extends javax.swing.JPanel {
-
-    /**
-     * Creates new form PanelTratamiento
-     */
     public PanelTratamiento() {
         initComponents();
         bloquearCampos();
@@ -35,7 +23,10 @@ public class PanelTratamiento extends javax.swing.JPanel {
     minCombo.addItem("45");
 }
 
-  
+    public javax.swing.JButton getEditarBtn() {
+      return editarBtn;
+    }
+
   
     public javax.swing.JTextField getNombreTxt() { 
         return nombreTxt; 
@@ -73,9 +64,6 @@ public class PanelTratamiento extends javax.swing.JPanel {
         return freqTxt; 
     }
 
-    public JButton getEditarBtn() {
-        return editarBtn;
-    }
     
     
     
@@ -403,9 +391,9 @@ public void modoEdicion() {
                     .addComponent(jLabel8)
                     .addComponent(sosCheck))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(insulinaCheck))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(insulinaCheck)
+                    .addComponent(jLabel9))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)

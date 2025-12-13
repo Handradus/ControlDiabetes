@@ -42,7 +42,10 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
         return edadTxt;
     }
 
-    
+    public JButton getVolverBtn() {
+        return volverBtn;
+    }
+
     
     
     
@@ -79,6 +82,7 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
         edadTxt = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        volverBtn = new javax.swing.JButton();
 
         jButton1.setText("jButton1");
 
@@ -105,6 +109,13 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
 
         jLabel2.setText("Rut");
 
+        volverBtn.setText("Volver");
+        volverBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                volverBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -126,13 +137,17 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
                                 .addComponent(rutPacienteTxt)
                                 .addComponent(edadTxt))
                             .addComponent(addPacienteBtn))))
-                .addContainerGap(204, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                .addComponent(volverBtn)
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(volverBtn))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nombrePacienteTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -163,6 +178,10 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_nombrePacienteTxtActionPerformed
 
+    private void volverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_volverBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addPacienteBtn;
@@ -176,5 +195,6 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
     private javax.swing.JTextField nombrePacienteTxt;
     private javax.swing.JTextField roomPctTxt;
     private javax.swing.JTextField rutPacienteTxt;
+    private javax.swing.JButton volverBtn;
     // End of variables declaration//GEN-END:variables
 }

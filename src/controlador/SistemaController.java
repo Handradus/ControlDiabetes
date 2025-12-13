@@ -19,10 +19,16 @@ import javax.swing.Timer;
 import vista.PanelEditarPaciente;
 import vista.PanelRegistrarGlicemia;
 import vista.PanelTratamiento;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+
+
 
 public class SistemaController {
+    private Paciente pacienteSeleccionado;
+    private ArrayList<Paciente> pacientesEnTabla = new ArrayList<>();
 
-   
 
     private final VentanaPrincipal ventana;
     private final GestorPacientes gestorPacientes;
@@ -103,39 +109,194 @@ public class SistemaController {
         ventana.mostrarPanel(panelLogin);
     }
 
-    private void mostrarMenuCuidador() {
-        panelCuidador = new PanelMenuCuidador();
+    
+    
+    
+private void mostrarMenuCuidador() {
 
-        panelCuidador.getAddPctBtn().addActionListener(e -> mostrarAgregarPaciente());
-        panelCuidador.getEditPctBtn().addActionListener(e -> {
+    panelCuidador = new PanelMenuCuidador();
+
+    panelCuidador.getPctTabla()
+        .getSelectionModel()
+        .addListSelectionListener(e -> {
+
+            if (e.getValueIsAdjusting()) return;
+
             int fila = panelCuidador.getPctTabla().getSelectedRow();
-            if (fila == -1) {
-                JOptionPane.showMessageDialog(ventana, "Seleccione un paciente primero.");
+
+            if (fila == -1 || fila >= pacientesEnTabla.size()) {
+                pacienteSeleccionado = null;
+                panelCuidador.habilitarPanelPaciente(false);
                 return;
             }
 
-    // Supongamos que en la columna 1 está el RUT
-            String rutSeleccionado = (String) panelCuidador.getPctTabla()
-            .getValueAt(fila, 1); // cambia el índice si tu tabla es distinta
+            pacienteSeleccionado = pacientesEnTabla.get(fila);
 
-            Paciente paciente = gestorPacientes.buscarPorRut(rutSeleccionado);
-            if (paciente == null) {
-                JOptionPane.showMessageDialog(ventana, "No se encontró el paciente en memoria.");
-                return;
-            }
+            panelCuidador.getActivoCheck()
+                    .setSelected(pacienteSeleccionado.isActivo());
 
-            mostrarEditarPaciente(paciente);
+            panelCuidador.habilitarPanelPaciente(true);
+            actualizarEstadoPaciente();
+            cargarAlertasPaciente(pacienteSeleccionado);
         });
-        
-        
-        panelCuidador.getListarPctBtn().addActionListener(e -> listarPacientes());
-        panelCuidador.getLogoutBtn().addActionListener(e -> cerrarSesion());
-        panelCuidador.getRegistrarGlicemiaBtn().addActionListener(e -> abrirRegistrarGlicemia());
-        panelCuidador.getVerTratamientoBtn().addActionListener(e -> abrirTratamientoPaciente());
 
-        ventana.mostrarPanel(panelCuidador);
+    panelCuidador.getActivoCheck().addActionListener(e -> {
+
+        if (pacienteSeleccionado == null) return;
+
+        boolean nuevoEstado = panelCuidador.getActivoCheck().isSelected();
+        String accion = nuevoEstado ? "activar" : "desactivar";
+
+        int resp = JOptionPane.showConfirmDialog(
+            ventana,
+            "¿Estás seguro que deseas " + accion + " al paciente?",
+            "Confirmar acción",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE
+        );
+
+        if (resp != JOptionPane.YES_OPTION) {
+            panelCuidador.getActivoCheck()
+                    .setSelected(pacienteSeleccionado.isActivo());
+            return;
+        }
+
+        pacienteSeleccionado.setActivo(nuevoEstado);
+
+        try {
+            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(
+                ventana,
+                "Error al guardar el estado del paciente",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+        listarPacientes();
+        panelCuidador.habilitarPanelPaciente(false);
+    });
+
+    panelCuidador.getAddPctBtn().addActionListener(e -> mostrarAgregarPaciente());
+
+    panelCuidador.getEditPctBtn().addActionListener(e -> {
+        if (pacienteSeleccionado != null)
+            mostrarEditarPaciente(pacienteSeleccionado);
+    });
+
+    panelCuidador.getRegistrarGlicemiaBtn()
+            .addActionListener(e -> abrirRegistrarGlicemia());
+
+    panelCuidador.getVerTratamientoBtn()
+            .addActionListener(e -> abrirTratamientoPaciente());
+
+    panelCuidador.getListarPctBtn()
+            .addActionListener(e -> listarPacientes());
+
+    panelCuidador.getLogoutBtn()
+            .addActionListener(e -> cerrarSesion());
+
+    panelCuidador.getBuscarRutTxt().getDocument()
+        .addDocumentListener(new DocumentListener() {
+            @Override public void insertUpdate(DocumentEvent e) { filtrarPacientesPorRut(); }
+            @Override public void removeUpdate(DocumentEvent e) { filtrarPacientesPorRut(); }
+            @Override public void changedUpdate(DocumentEvent e) { filtrarPacientesPorRut(); }
+        });
+
+    ventana.mostrarPanel(panelCuidador);
+    listarPacientes();
+    panelCuidador.habilitarPanelPaciente(false);
+}
+private void actualizarEstadoPaciente() {
+
+    if (pacienteSeleccionado == null) {
+        panelCuidador.getRegistrarGlicemiaBtn().setEnabled(false);
+        panelCuidador.getEditPctBtn().setEnabled(false);
+        panelCuidador.getVerTratamientoBtn().setEnabled(false);
+        return;
     }
 
+    boolean activo = pacienteSeleccionado.isActivo();
+
+    panelCuidador.getRegistrarGlicemiaBtn().setEnabled(activo);
+    panelCuidador.getEditPctBtn().setEnabled(activo);
+    panelCuidador.getVerTratamientoBtn().setEnabled(activo);
+}
+
+
+private void filtrarPacientesPorRut() {
+
+    String texto = panelCuidador.getBuscarRutTxt()
+            .getText().trim().toLowerCase();
+
+    pacientesEnTabla = new ArrayList<>();
+
+    DefaultTableModel modelo = new DefaultTableModel(
+        new String[]{"Nombre", "RUT", "Edad", "Habitación"}, 0
+    );
+
+    for (Paciente p : gestorPacientes.obtenerTodos()) {
+
+        if (texto.isEmpty() || p.getRut().toLowerCase().startsWith(texto)) {
+            pacientesEnTabla.add(p);
+            modelo.addRow(new Object[]{
+                p.getNombre(),
+                p.getRut(),
+                p.getEdad(),
+                p.getHabitacion()
+            });
+        }
+    }
+
+    panelCuidador.getPctTabla().setModel(modelo);
+    panelCuidador.aplicarRenderPacientes(pacientesEnTabla);
+
+    pacienteSeleccionado = null;
+    panelCuidador.habilitarPanelPaciente(false);
+}
+
+
+
+ 
+    private void buscarPacientePorRut() {
+
+        String rutBuscado = panelCuidador.getBuscarRutTxt().getText().trim();
+
+        if (rutBuscado.isEmpty()) {
+            listarPacientes();
+            return;
+        }
+
+        Paciente p = gestorPacientes.buscarPorRut(rutBuscado);
+
+        if (p == null) {
+            JOptionPane.showMessageDialog(
+                    ventana,
+                    "No se encontró paciente con ese RUT.",
+                    "Búsqueda",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Nombre");
+        modelo.addColumn("RUT");
+        modelo.addColumn("Edad");
+        modelo.addColumn("Habitación");
+
+        modelo.addRow(new Object[]{
+                p.getNombre(),
+                p.getRut(),
+                p.getEdad(),
+                p.getHabitacion()
+        });
+
+        panelCuidador.getPctTabla().setModel(modelo);
+    }
+
+    
     private void mostrarMenuAdmin() {
         panelAdmin = new PanelMenuAdmin();
        
@@ -147,63 +308,65 @@ public class SistemaController {
     }
 
     private void mostrarAgregarPaciente() {
+
         PanelAgregarPaciente panel = new PanelAgregarPaciente();
+
         panel.getAddPacienteBtn().addActionListener(e -> crearPaciente(panel));
 
-        ventana.mostrarPanel(panel);
-              
-    }
-
-    private void mostrarEditarPaciente(Paciente paciente) {
-        panelEdicionPCT = new PanelEditarPaciente();
-        panelEdicionPCT.getNombrePacienteTxt().setText(paciente.getNombre());
-        panelEdicionPCT.getRutPacienteTxt().setText(paciente.getRut());
-        panelEdicionPCT.getRoomPctTxt().setText(paciente.getHabitacion());
-        panelEdicionPCT.getEdadTxt().setText(String.valueOf(paciente.getEdad()));
-
-        //nuevos datos
-        
-        panelEdicionPCT.getSaveEditPacienteBtn().addActionListener(e -> {
-            String nuevoNombre = panelEdicionPCT.getNombrePacienteTxt().getText();
-            String nuevoRut    = panelEdicionPCT.getRutPacienteTxt().getText();
-            String nuevaHab    = panelEdicionPCT.getRoomPctTxt().getText();
-            String nuevaEdadStr = panelEdicionPCT.getEdadTxt().getText();
-
-            if (nuevoNombre.isBlank() || nuevoRut.isBlank() || nuevaHab.isBlank()) {
-                JOptionPane.showMessageDialog(ventana, "Complete todos los campos.");
-                return;
-            }
-
-            paciente.setNombre(nuevoNombre);
-            paciente.setRut(nuevoRut);
-            paciente.setHabitacion(nuevaHab);
-
-            try {
-                int nuevaEdad = Integer.parseInt(nuevaEdadStr);
-                paciente.setEdad(nuevaEdad);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(ventana, "Edad inválida");
-                return;
-            }
-            try {
-            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
-
-            
-            } catch (IOException ex1) {
-                JOptionPane.showMessageDialog(ventana, "Error al guardar pacientes: " + ex1.getMessage());
-            
-            }
-
-            JOptionPane.showMessageDialog(ventana, "Paciente actualizado correctamente.");
-
-        // 2.3) Volver al menú/cuidador y refrescar la tabla
+        panel.getVolverBtn().addActionListener(e -> {
             ventana.mostrarPanel(panelCuidador);
-        listarPacientes();  // método tuyo para volver a cargar los datos en la JTable
+            listarPacientes();
         });
 
-    // 3) Mostrar el panel de edición
-        ventana.mostrarPanel(panelEdicionPCT);
+        ventana.mostrarPanel(panel);
     }
+
+
+private void mostrarEditarPaciente(Paciente paciente) {
+
+    if (!paciente.isActivo()) {
+        JOptionPane.showMessageDialog(
+            ventana,
+            "El paciente está desactivado.",
+            "Acción no permitida",
+            JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    panelEdicionPCT = new PanelEditarPaciente();
+    panelEdicionPCT.getNombrePacienteTxt().setText(paciente.getNombre());
+    panelEdicionPCT.getRutPacienteTxt().setText(paciente.getRut());
+    panelEdicionPCT.getRoomPctTxt().setText(paciente.getHabitacion());
+    panelEdicionPCT.getEdadTxt().setText(String.valueOf(paciente.getEdad()));
+
+    panelEdicionPCT.getSaveEditPacienteBtn().addActionListener(e -> {
+
+        paciente.setNombre(panelEdicionPCT.getNombrePacienteTxt().getText());
+        paciente.setRut(panelEdicionPCT.getRutPacienteTxt().getText());
+        paciente.setHabitacion(panelEdicionPCT.getRoomPctTxt().getText());
+
+        try {
+            paciente.setEdad(
+                Integer.parseInt(panelEdicionPCT.getEdadTxt().getText())
+            );
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(ventana, "Edad inválida");
+            return;
+        }
+
+        try {
+            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(ventana, "Error al guardar.");
+        }
+
+        ventana.mostrarPanel(panelCuidador);
+        listarPacientes();
+    });
+
+    ventana.mostrarPanel(panelEdicionPCT);
+}
 
 
        
@@ -269,27 +432,29 @@ public class SistemaController {
         panelAdmin.getTabla().setModel(modelo);
     }
 
-    private void listarPacientes() {
-        
-        ArrayList<Paciente> pacientes = gestorPacientes.obtenerTodos();
+private void listarPacientes() {
 
-        DefaultTableModel modelo = new DefaultTableModel();
-        modelo.addColumn("Nombre");
-        modelo.addColumn("RUT");
-        modelo.addColumn("Edad");
-        modelo.addColumn("Habitación");
+    pacientesEnTabla = gestorPacientes.obtenerTodos();
 
-        for (Paciente p : pacientes) {
-            modelo.addRow(new Object[]{
-                    p.getNombre(),
-                    p.getRut(),
-                    p.getEdad(),
-                    p.getHabitacion()
-            });
-        }
+    DefaultTableModel modelo = new DefaultTableModel(
+        new String[]{"Nombre", "RUT", "Edad", "Habitación"}, 0
+    );
 
-        panelCuidador.getPctTabla().setModel(modelo);
+    for (Paciente p : pacientesEnTabla) {
+        modelo.addRow(new Object[]{
+            p.getNombre(),
+            p.getRut(),
+            p.getEdad(),
+            p.getHabitacion()
+        });
     }
+
+    panelCuidador.getPctTabla().setModel(modelo);
+    panelCuidador.aplicarRenderPacientes(pacientesEnTabla);
+
+    pacienteSeleccionado = null;
+    panelCuidador.habilitarPanelPaciente(false);
+}
 
     private void cerrarSesion() {
         // No se cierra la ventana principal, solo volvemos al login
@@ -332,88 +497,11 @@ public class SistemaController {
         }
     }
 
-    private void abrirRegistrarGlicemia() {
-        int fila = panelCuidador.getPctTabla().getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(ventana, "Seleccione un paciente primero.");
-            return;
-        }
-
-        String rut = (String) panelCuidador.getPctTabla().getValueAt(fila, 1);
-        Paciente p = gestorPacientes.buscarPorRut(rut);
-        
-
-        if (p == null) {
-            JOptionPane.showMessageDialog(ventana, "No se encontró el paciente.");
-            return;
-        }
-
-        panelRegistrarGlicemia = new PanelRegistrarGlicemia();
-        
-        //cambia lbl a nombre de paciente usando el metodo en la vista de glicemia
-        panelRegistrarGlicemia.setNombrePaciente(p.getNombre());
-        
-        //Tabla para listar glicemia
-        
-        DefaultTableModel modelo = new DefaultTableModel();
-        modelo.addColumn("Fecha");
-        modelo.addColumn("Valor");
-        modelo.addColumn("Registrado por");
-
-        for (RegistroGlicemia r : p.getHistorialGlicemias()) {
-            modelo.addRow(new Object[]{
-                    r.getFechaHora(),
-                    r.getValor(),
-                    r.getRegistrado()
-            });
-        }
-
-        panelRegistrarGlicemia.getHgtTabla().setModel(modelo);
-
-
-        panelRegistrarGlicemia.getRegistrarBtn().addActionListener(e -> {
-            String valorStr = panelRegistrarGlicemia.getValorTxt().getText();
-            String registrado = usuarioLogueado.getNombreUsuario();
-
-            int valor;
-
-            try {
-                valor = Integer.parseInt(valorStr);
-            } catch (NumberFormatException ex) {
-                panelRegistrarGlicemia.mostrarError("La glicemia debe ser un número.");
-                return;
-            }
-
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-            String fecha = LocalDateTime.now().format(f);
-
-            RegistroGlicemia reg = new RegistroGlicemia(fecha, valor,registrado);
-
-            p.agregarRegistroGlicemia(reg);
-
-            panelRegistrarGlicemia.mostrarInfo("Glicemia registrada.");
-
-            try {
-                gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
-            } catch (IOException ex2) {
-                panelRegistrarGlicemia.mostrarError("Guardado en memoria, pero error al escribir archivo.");
-            }
-
-            ventana.mostrarPanel(panelCuidador);
-            listarPacientes();
-        });
-
-        panelRegistrarGlicemia.getVolverBtn().addActionListener(e -> ventana.mostrarPanel(panelCuidador));
-
-        ventana.mostrarPanel(panelRegistrarGlicemia);
-    }
-
-
-private void abrirTratamientoPaciente() {
+private void abrirRegistrarGlicemia() {
 
     int fila = panelCuidador.getPctTabla().getSelectedRow();
     if (fila == -1) {
-        JOptionPane.showMessageDialog(ventana, "Seleccione un paciente.");
+        JOptionPane.showMessageDialog(ventana, "Seleccione un paciente primero.");
         return;
     }
 
@@ -421,71 +509,145 @@ private void abrirTratamientoPaciente() {
     Paciente p = gestorPacientes.buscarPorRut(rut);
 
     if (p == null) {
-        JOptionPane.showMessageDialog(ventana, "Paciente no encontrado.");
+        JOptionPane.showMessageDialog(ventana, "No se encontró el paciente.");
+        return;
+    }
+
+    if (!p.isActivo()) {
+        JOptionPane.showMessageDialog(
+            ventana,
+            "El paciente está desactivado.",
+            "Acción no permitida",
+            JOptionPane.WARNING_MESSAGE
+        );
+        return;
+    }
+
+    panelRegistrarGlicemia = new PanelRegistrarGlicemia();
+    panelRegistrarGlicemia.setNombrePaciente(p.getNombre());
+
+    DefaultTableModel modelo = new DefaultTableModel();
+    modelo.addColumn("Fecha");
+    modelo.addColumn("Valor");
+    modelo.addColumn("Registrado por");
+
+    for (RegistroGlicemia r : p.getHistorialGlicemias()) {
+        modelo.addRow(new Object[]{
+            r.getFechaHora(),
+            r.getValor(),
+            r.getRegistrado()
+        });
+    }
+
+    panelRegistrarGlicemia.getHgtTabla().setModel(modelo);
+
+    panelRegistrarGlicemia.getRegistrarBtn().addActionListener(e -> {
+
+        String valorStr = panelRegistrarGlicemia.getValorTxt().getText();
+        int valor;
+
+        try {
+            valor = Integer.parseInt(valorStr);
+        } catch (NumberFormatException ex) {
+            panelRegistrarGlicemia.mostrarError("La glicemia debe ser un número.");
+            return;
+        }
+
+        String fecha = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+
+        RegistroGlicemia reg = new RegistroGlicemia(
+            fecha,
+            valor,
+            usuarioLogueado.getNombreUsuario()
+        );
+
+        p.agregarRegistroGlicemia(reg);
+
+        if (p.getTratamiento() != null) {
+            Alerta alerta = new Alerta(
+                "CONTROL",
+                "Próximo control de glicemia",
+                p
+            );
+            p.agregarAlerta(alerta);
+        }
+
+        panelRegistrarGlicemia.mostrarInfo("Glicemia registrada.");
+
+        try {
+            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+        } catch (IOException ex) {
+            panelRegistrarGlicemia.mostrarError("Error al guardar.");
+        }
+
+        ventana.mostrarPanel(panelCuidador);
+        listarPacientes();
+    });
+
+    panelRegistrarGlicemia.getVolverBtn()
+        .addActionListener(e -> ventana.mostrarPanel(panelCuidador));
+
+    ventana.mostrarPanel(panelRegistrarGlicemia);
+}
+
+
+private void abrirTratamientoPaciente() {
+
+    if (pacienteSeleccionado == null) {
+        JOptionPane.showMessageDialog(ventana, "Seleccione un paciente.");
+        return;
+    }
+
+    Paciente p = pacienteSeleccionado;
+
+    if (!p.isActivo()) {
+        JOptionPane.showMessageDialog(
+            ventana,
+            "El paciente está desactivado.",
+            "Acción no permitida",
+            JOptionPane.WARNING_MESSAGE
+        );
         return;
     }
 
     panelTratamiento = new PanelTratamiento();
-    JCheckBox chkLenta = panelTratamiento.getInsulinaCheck();
-
-  
-    chkLenta.addActionListener(e -> {
-        // Si está en modo lectura, no hacer nada
-        if (!chkLenta.isEnabled()) return;
-
-        boolean activo = chkLenta.isSelected();
-        panelTratamiento.habilitarDosisLenta(activo);
-
-        if (!activo) {
-            panelTratamiento.limpiarDosis();
-        }
-    });
-
     panelTratamiento.modoLectura();
 
-    // Datos del paciente
     panelTratamiento.getNombreTxt().setText(p.getNombre());
     panelTratamiento.getRutTxt().setText(p.getRut());
+    panelTratamiento.getNombreTxt().setEditable(false);
+    panelTratamiento.getRutTxt().setEditable(false);
 
-    //Carga tto
-    Tratamiento t = p.getTratamiento();
-    if (t != null) {
+    if (p.getTratamiento() != null) {
+        Tratamiento t = p.getTratamiento();
+
         panelTratamiento.getDietaTxt().setText(t.getDietaRecomendada());
         panelTratamiento.getMedsTxt().setText(t.getMedicamentosOrales());
         panelTratamiento.getSosCheck().setSelected(t.isUsaInsulinaCristalinaSOS());
 
-        chkLenta.setSelected(t.isUsaInsulinaLentaDiaria());
-
-        panelTratamiento.getDosisTxt()
-                .setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
-        panelTratamiento.getFreqTxt()
-                .setText(String.valueOf(t.getFrecuenciaHorasControles()));
+        panelTratamiento.getInsulinaCheck().setSelected(t.isUsaInsulinaLentaDiaria());
+        panelTratamiento.getDosisTxt().setText(String.valueOf(t.getDosisInsulinaLentaDiaria()));
+        panelTratamiento.getFreqTxt().setText(String.valueOf(t.getFrecuenciaHorasControles()));
 
         if (t.getHoraPrimerControl() != null) {
             LocalTime h = t.getHoraPrimerControl();
-            panelTratamiento.getHoraCombo()
-                    .setSelectedItem(String.format("%02d", h.getHour()));
-            panelTratamiento.getMinCombo()
-                    .setSelectedItem(String.format("%02d", h.getMinute()));
+            panelTratamiento.getHoraCombo().setSelectedItem(String.format("%02d", h.getHour()));
+            panelTratamiento.getMinCombo().setSelectedItem(String.format("%02d", h.getMinute()));
         }
     }
 
-    
-    panelTratamiento.habilitarDosisLenta(chkLenta.isSelected());
-
-   
-    panelTratamiento.getEditarBtn().addActionListener(e -> {
-        panelTratamiento.modoEdicion(); // habilita campos y checkbox
-        panelTratamiento.habilitarDosisLenta(chkLenta.isSelected());
+    panelTratamiento.getVolverBtn().addActionListener(e -> {
+        ventana.mostrarPanel(panelCuidador);
+        listarPacientes();
     });
 
-   
-    panelTratamiento.getVolverBtn()
-            .addActionListener(e -> ventana.mostrarPanel(panelCuidador));
+    panelTratamiento.getEditarBtn().addActionListener(e -> {
+        abrirTratamientoParaEdicion(p);
+    });
 
     ventana.mostrarPanel(panelTratamiento);
 }
-
 
 
     private void iniciarReloj() {
@@ -609,4 +771,26 @@ private void abrirTratamientoPaciente() {
 }      
            
 
+    private void cargarAlertasPaciente(Paciente p) {
+        DefaultTableModel modelo =
+            (DefaultTableModel) panelCuidador.getAlertasTabla().getModel();
+
+        modelo.setRowCount(0); // Limpia la tabla
+
+        if (p.getAlertas() == null) return;
+
+        for (Alerta a : p.getAlertas()) {
+            modelo.addRow(new Object[]{
+                a.getFechaHora(),
+                a.getTipo(),
+                a.getMensaje()
+            });
+        }
+    }
+
+
+
+
+
+   
 }

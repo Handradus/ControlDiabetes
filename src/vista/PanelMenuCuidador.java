@@ -1,46 +1,136 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package vista;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 
-/**
- *
- * @author Diavuru
- */
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.BorderLayout;
+
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import modelo.Paciente;
+
+
+
 public class PanelMenuCuidador extends javax.swing.JPanel {
 
-    /**
-     * Creates new form PanelMenuCuidador
-     */
-    public PanelMenuCuidador() {
-        initComponents();
+    private javax.swing.JPanel panelAlertas;
+
+    
+        public PanelMenuCuidador() {
+    initComponents();
+
+    // ===== CONTENEDOR DE ALERTAS (SIN TOCAR GROUPLAYOUT) =====
+    panelAlertas = new javax.swing.JPanel(new java.awt.BorderLayout());
+    panelAlertas.add(alertasScroll, java.awt.BorderLayout.CENTER);
+
+    // ⚠️ NO SE OCULTA EL SCROLL, SOLO SE DESHABILITA
+    activoCheck.setEnabled(false);
+
+    alertasScroll.setEnabled(false);
+    alertasTabla.setEnabled(false);
+
+    // ===== MODELO FIJO PARA ALERTAS =====
+    alertasTabla.setModel(new javax.swing.table.DefaultTableModel(
+        new Object[][]{},
+        new String[]{"Fecha", "Hora", "Tipo"}
+    ));
+}
+
+
+
+public void habilitarPanelPaciente(boolean habilitado) {
+
+    activoCheck.setEnabled(habilitado);
+
+    alertasScroll.setEnabled(habilitado);
+    alertasTabla.setEnabled(habilitado);
+
+    if (!habilitado) {
+        DefaultTableModel modelo =
+            (DefaultTableModel) alertasTabla.getModel();
+        modelo.setRowCount(0); // limpia alertas
+    }
+}
+
+    public void limpiarAlertas() {
+    DefaultTableModel modelo =
+        (DefaultTableModel) alertasTabla.getModel();
+    modelo.setRowCount(0);
+}
+
+    
+public void aplicarRenderPacientes(java.util.List<Paciente> pacientes) {
+    pctTabla.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table, Object value, boolean isSelected,
+                boolean hasFocus, int row, int column) {
+
+            Component c = super.getTableCellRendererComponent(
+                    table, value, isSelected, hasFocus, row, column);
+
+            Paciente p = pacientes.get(row);
+
+            if (!p.isActivo()) {
+                c.setForeground(Color.GRAY); 
+            } else {
+                c.setForeground(isSelected ? table.getSelectionForeground() : Color.BLACK);
+            }
+
+            return c;
+        }
+    });
+}
+
+    
+    
+    
+   
+    public JCheckBox getActivoCheck() {
+        return activoCheck;
     }
 
-    public JButton getEditPctBtn() {
-        return EditPctBtn;
+    public JTable getAlertasTabla() {
+        return alertasTabla;
     }
 
-    public JButton getAddPctBtn() {
-        return addPctBtn;
-    }
-
-    public JButton getListarPctBtn() {
-        return listarPctBtn;
+    public JScrollPane getAlertasScroll() {
+        return alertasScroll;
     }
 
     public JTable getPctTabla() {
         return pctTabla;
     }
 
-    public JButton getLogoutBtn() {
-        return logoutBtn;
+    public JTextField getBuscarRutTxt() {
+        return buscarRutTxt;
     }
     
+    public javax.swing.JPanel getPanelAlertas() {
+        return panelAlertas;
+    }
+
+
+    public JButton getAddPctBtn() {
+        return addPctBtn;
+    }
+
+    public JButton getEditPctBtn() {
+        return EditPctBtn;
+    }
+
+    public JButton getListarPctBtn() {
+        return listarPctBtn;
+    }
+
     public JButton getRegistrarGlicemiaBtn() {
         return registrarGlicemiaBtn;
     }
@@ -49,6 +139,10 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
         return verTratamientoBtn;
     }
 
+    public JButton getLogoutBtn() {
+        return logoutBtn;
+    }
+    
     
     public void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(
@@ -81,7 +175,13 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
         listarPctBtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
         registrarGlicemiaBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
         verTratamientoBtn = new javax.swing.JButton();
+        buscarRutTxt = new javax.swing.JTextField();
+        alertasScroll = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        alertasTabla = new javax.swing.JTable();
+        activoCheck = new javax.swing.JCheckBox();
 
         EditPctBtn.setText("Editar Paciente");
 
@@ -113,21 +213,47 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
 
         registrarGlicemiaBtn.setText("Glicemias");
 
+        jLabel2.setText("Buscar RUT:");
+
         verTratamientoBtn.setText("Ver Tratamiento");
+
+        buscarRutTxt.setColumns(12);
+        buscarRutTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarRutTxtActionPerformed(evt);
+            }
+        });
+
+        alertasTabla.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(alertasTabla);
+
+        alertasScroll.setViewportView(jScrollPane2);
+
+        activoCheck.setText("Activar / Desactivar paciente");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(53, 53, 53)
-                        .addComponent(addPctBtn)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(addPctBtn)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addComponent(jLabel1)))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -135,14 +261,24 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
                                 .addGap(18, 18, 18)
                                 .addComponent(EditPctBtn))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
-                                .addComponent(logoutBtn)))))
-                .addGap(16, 16, 16))
+                                .addGap(0, 607, Short.MAX_VALUE)
+                                .addComponent(logoutBtn)))
+                        .addGap(16, 16, 16))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(alertasScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(108, 108, 108)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(26, 26, 26)
+                                .addComponent(buscarRutTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(activoCheck))
+                        .addContainerGap(44, Short.MAX_VALUE))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(69, 69, 69)
                 .addComponent(registrarGlicemiaBtn)
-                .addGap(45, 45, 45)
+                .addGap(54, 54, 54)
                 .addComponent(verTratamientoBtn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -150,9 +286,11 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel1)
-                    .addComponent(logoutBtn))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(logoutBtn)
+                    .addComponent(jLabel2)
+                    .addComponent(buscarRutTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(registrarGlicemiaBtn)
@@ -162,9 +300,16 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
                     .addComponent(addPctBtn)
                     .addComponent(listarPctBtn)
                     .addComponent(EditPctBtn))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(alertasScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(activoCheck)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -172,12 +317,22 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_addPctBtnActionPerformed
 
+    private void buscarRutTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buscarRutTxtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buscarRutTxtActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton EditPctBtn;
+    private javax.swing.JCheckBox activoCheck;
     private javax.swing.JButton addPctBtn;
+    private javax.swing.JScrollPane alertasScroll;
+    private javax.swing.JTable alertasTabla;
+    private javax.swing.JTextField buscarRutTxt;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton listarPctBtn;
     private javax.swing.JButton logoutBtn;
     private javax.swing.JTable pctTabla;
