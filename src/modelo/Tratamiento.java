@@ -12,10 +12,9 @@ public class Tratamiento {
     private int dosisInsulinaLentaDiaria; 
     private String pautaInsulinaSOS;
 
-    private int frecuenciaHorasControles;     // 8, 12, 24
-    private LocalTime horaPrimerControl;      // hora del primer control del día
+    private int frecuenciaHorasControles;
+    private LocalTime horaPrimerControl;
 
-    // Constructor
     public Tratamiento(String dietaRecomendada,
                    String medicamentosOrales,
                    boolean usaInsulinaCristalinaSOS,
@@ -34,11 +33,7 @@ public class Tratamiento {
     this.setHoraPrimerControl(horaPrimerControl);
     this.setPautaInsulinaSOS(pautaInsulinaSOS);
 }
-
-
-    // setters
-        
-      
+ 
     public void setMedicamentosOrales(String medicamentosOrales) {
         if (medicamentosOrales != null && !medicamentosOrales.trim().isEmpty()){
             this.medicamentosOrales = medicamentosOrales;
@@ -84,7 +79,7 @@ public class Tratamiento {
             System.err.println("Error: La dosis de insulina no puede ser un número negativo.");
             return;
         }
-    //editar segun el controller
+
         if (frecuenciaHorasControles > 24) {
              System.err.println("Error: La cantidad de controles (" + frecuenciaHorasControles + ") es demasiado alta.");
              return;
@@ -97,7 +92,6 @@ public class Tratamiento {
         this.horaPrimerControl = horaPrimerControl;
     }
     
-    //Getters
     public String getMedicamentosOrales() {
         return medicamentosOrales;
     }

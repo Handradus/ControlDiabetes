@@ -126,8 +126,7 @@ public void modoEdicion() {
 
     saveTtoBtn.setEnabled(true);
     editarBtn.setEnabled(false);
-
-    //toggle al entrar
+    
     habilitarDosisLenta(insulinaCheck.isSelected());
 }
 

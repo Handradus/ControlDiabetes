@@ -85,9 +85,7 @@ public class Paciente {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
-
-    // ===== Getters =====
-
+    
     public String getNombre() {
         return nombre;
     }
@@ -129,7 +127,6 @@ public class Paciente {
         return alertas;
     }
 
-    // ===== Métodos =====
 
     public void agregarRegistroGlicemia(RegistroGlicemia registro) {
         if (registro != null) {
@@ -207,7 +204,6 @@ public class Paciente {
 
     proximoControl = proximoControl.plusHours(freq);
 
-    // por si estaba atrasado (ej: el sistema estuvo cerrado), empújalo al futuro
     LocalDateTime ahora = LocalDateTime.now();
     while (!proximoControl.isAfter(ahora)) {
         proximoControl = proximoControl.plusHours(freq);

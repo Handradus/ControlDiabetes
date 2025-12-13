@@ -1,25 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package vista;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
- *
- * @author Diavuru
- */
 public class VentanaPrincipal extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName());
-
-    /**
-     * Creates new form 
-     *  private JPanel panelActual;
-     */
     private JPanel panelActual;
     
     public VentanaPrincipal() {
@@ -27,8 +14,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         
         setTitle("Control de Pacientes Diabéticos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);              // ajusta a lo que uses
-        setLocationRelativeTo(null);    // centra la ventana
+        setSize(800, 600);
+        setLocationRelativeTo(null);
         setLayout(new java.awt.BorderLayout());
         ubicarHoraAbajo();
     }
@@ -51,10 +38,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void ubicarHoraAbajo() {
     int w = getWidth();
     int h = getHeight();
-
-    // Ajusta según lo que quieras
-    int x = 20;         // margen izquierdo
-    int y = h - 70;     // posición vertical abajo
+    int x = 20;
+    int y = h - 70;
 
     horaLabel.setLocation(x, y);
 }

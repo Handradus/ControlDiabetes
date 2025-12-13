@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package vista;
 
 import javax.swing.JButton;
@@ -9,15 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-/**
- *
- * @author Diavuru
- */
 public class PanelAgregarPaciente extends javax.swing.JPanel {
-
-    /**
-     * Creates new form PanelAgregarPaciente
-     */
     public PanelAgregarPaciente() {
         initComponents();
     }
@@ -51,10 +39,10 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
     
      public void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(
-                this,               // Componente padre (la propia ventana)
-                mensaje,            // Texto del error
-                "Error",            // Título de la ventana de diálogo
-                JOptionPane.ERROR_MESSAGE  // Icono de error
+                this,
+                mensaje,
+                "Error",
+                JOptionPane.ERROR_MESSAGE
         );
     }
     

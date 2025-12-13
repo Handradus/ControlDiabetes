@@ -22,8 +22,6 @@ public class Alerta {
         this.fechaHora = ahora.format(f);
     }
 
-    // ===== Setters =====
-
     public void setTipo(String tipo) {
         if (tipo != null && !tipo.trim().isEmpty()) {
             this.tipo = tipo;
@@ -47,8 +45,6 @@ public class Alerta {
     public void setAtendida(boolean atendida) {
         this.atendida = atendida;
     }
-
-    // ===== Getters =====
 
     public String getTipo() {
         return tipo;
