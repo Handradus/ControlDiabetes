@@ -36,6 +36,12 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
     public JTextField getEdadTxt() {
         return edadTxt;
     }
+
+    public JButton getVolverBtn() {
+        return volverBtn;
+    }
+    
+    
     
 
     public JButton getSaveEditPacienteBtn() {
@@ -74,6 +80,11 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
         saveEditPacienteBtn = new javax.swing.JButton();
         nombrePacienteTxt = new javax.swing.JTextField();
         rutPacienteTxt = new javax.swing.JTextField();
+        volverBtn = new javax.swing.JButton();
+
+        roomPctTxt.setColumns(5);
+
+        edadTxt.setColumns(5);
 
         jLabel1.setText("Nombre");
 
@@ -92,9 +103,19 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
             }
         });
 
+        nombrePacienteTxt.setColumns(5);
         nombrePacienteTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nombrePacienteTxtActionPerformed(evt);
+            }
+        });
+
+        rutPacienteTxt.setColumns(5);
+
+        volverBtn.setText("Volver");
+        volverBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                volverBtnActionPerformed(evt);
             }
         });
 
@@ -119,7 +140,9 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
                             .addComponent(roomPctTxt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(edadTxt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(26, 26, 26)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(volverBtn)
+                .addGap(25, 25, 25))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(146, Short.MAX_VALUE)
                 .addComponent(saveEditPacienteBtn)
@@ -129,7 +152,9 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(volverBtn))
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nombrePacienteTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -160,6 +185,10 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_nombrePacienteTxtActionPerformed
 
+    private void volverBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_volverBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField edadTxt;
@@ -172,5 +201,6 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
     private javax.swing.JTextField roomPctTxt;
     private javax.swing.JTextField rutPacienteTxt;
     private javax.swing.JButton saveEditPacienteBtn;
+    private javax.swing.JButton volverBtn;
     // End of variables declaration//GEN-END:variables
 }

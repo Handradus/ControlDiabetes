@@ -1,4 +1,7 @@
 package modelo;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class Paciente {
@@ -7,6 +10,7 @@ public class Paciente {
     private String rut;
     private int edad;
     private String habitacion;
+    private LocalDateTime proximoControl;
 
     private boolean activo;
     private Tratamiento tratamiento;  
@@ -33,6 +37,8 @@ public class Paciente {
             this.nombre = nombre;
         }
     }
+    
+    
 
     public void setRut(String rut) {
         if (rut != null && !rut.trim().isEmpty()){
@@ -46,13 +52,16 @@ public class Paciente {
         }
     }
 
-    public void setTratamiento(Tratamiento tratamiento) {
-        if (tratamiento != null) {
-            this.tratamiento = tratamiento;
-        } else {
-            System.err.println("Error: No se puede asignar un tratamiento nulo al paciente.");
-        }
+   public void setTratamiento(Tratamiento tratamiento) {
+    this.tratamiento = tratamiento;
+    if (tratamiento != null) {
+        recalcularProximoControl();
+    } else {
+        proximoControl = null;
     }
+}
+
+
 
     public void setEdad(int edad) {
 
@@ -87,6 +96,11 @@ public class Paciente {
         return rut;
     }
 
+    public LocalDateTime getProximoControl() {
+        return proximoControl;
+    }
+
+    
     public int getEdad() {
         return edad;
     }
@@ -148,4 +162,60 @@ public class Paciente {
                 ", alertas=" + alertas +
                 '}';
     }
+
+    public void recalcularProximoControl() {
+       if (tratamiento == null) {
+        proximoControl = null;
+        return;
+    }
+
+    int freq = tratamiento.getFrecuenciaHorasControles();
+    LocalTime primer = tratamiento.getHoraPrimerControl();
+
+    if (freq <= 0 || primer == null) {
+        proximoControl = null;
+        return;
+    }
+
+    LocalDateTime ahora = LocalDateTime.now();
+    LocalDate hoy = ahora.toLocalDate();
+
+    
+    LocalDateTime candidato = LocalDateTime.of(hoy, primer);
+
+    
+    while (!candidato.isAfter(ahora)) {
+        candidato = candidato.plusHours(freq);
+    }
+
+    proximoControl = candidato;
+    }
+    
+    
+    
+    public void avanzarProximoControlTrasRegistro() {
+    if (tratamiento == null) return;
+
+    int freq = tratamiento.getFrecuenciaHorasControles();
+    LocalTime primer = tratamiento.getHoraPrimerControl();
+    if (freq <= 0 || primer == null) return;
+
+    if (proximoControl == null) {
+        recalcularProximoControl();
+        return;
+    }
+
+    proximoControl = proximoControl.plusHours(freq);
+
+    // por si estaba atrasado (ej: el sistema estuvo cerrado), empújalo al futuro
+    LocalDateTime ahora = LocalDateTime.now();
+    while (!proximoControl.isAfter(ahora)) {
+        proximoControl = proximoControl.plusHours(freq);
+    }
+}
+    
+    
+    
+
+
 }

@@ -66,6 +66,10 @@ public class GestorPacientes {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))) {
             for (Paciente p : listaPacientes) {
                 Tratamiento t = p.getTratamiento();
+                String pautaSOS = (t != null && t.getPautaInsulinaSOS() != null) ? t.getPautaInsulinaSOS() : "";
+                pautaSOS = pautaSOS.replace(";", ","); // para no romper el split
+
+
 
                 String dieta = (t != null && t.getDietaRecomendada() != null) ? t.getDietaRecomendada() : "";
                 String meds = (t != null && t.getMedicamentosOrales() != null) ? t.getMedicamentosOrales() : "";
@@ -93,7 +97,9 @@ public class GestorPacientes {
                     lenta + ";" +
                     dosisLenta + ";" +
                     freq + ";" +
-                    horaPrimera
+                    horaPrimera+";"+
+                    pautaSOS
+                    
                 );
                 bw.newLine();
             }
@@ -129,6 +135,8 @@ public class GestorPacientes {
                 if (partes.length > 10 && !partes[10].isBlank()) {
                     horaPrimera = LocalTime.parse(partes[10]);
                 }
+                String pautaInsulinaSOS = partes.length > 11 ? partes[11] : "";
+
 
                 Tratamiento t = new Tratamiento(
                         dieta,
@@ -137,7 +145,8 @@ public class GestorPacientes {
                         lenta,
                         dosisLenta,
                         freq,
-                        horaPrimera
+                        horaPrimera,
+                        pautaInsulinaSOS
                 );
 
                 Paciente p = new Paciente(nombre, rut, edad, habitacion, t);
@@ -153,7 +162,7 @@ public class GestorPacientes {
                         if (h.equals(horaPrimera)) break;
                     }
                 }
-
+                p.recalcularProximoControl();    
                 listaPacientes.add(p);
             }
         }

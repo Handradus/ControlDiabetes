@@ -10,26 +10,31 @@ public class Tratamiento {
     private boolean usaInsulinaCristalinaSOS;
     private boolean usaInsulinaLentaDiaria;
     private int dosisInsulinaLentaDiaria; 
+    private String pautaInsulinaSOS;
 
     private int frecuenciaHorasControles;     // 8, 12, 24
     private LocalTime horaPrimerControl;      // hora del primer control del día
 
     // Constructor
     public Tratamiento(String dietaRecomendada,
-                       String medicamentosOrales,
-                       boolean usaInsulinaCristalinaSOS,
-                       boolean usaInsulinaLentaDiaria,
-                       int dosisInsulinaLentaDiaria,
-                       int frecuenciaHorasControles,
-                       LocalTime horaPrimerControl) {
-        this.setDietaRecomendada (dietaRecomendada);
-        this.setMedicamentosOrales (medicamentosOrales);
-        this.setUsaInsulinaCristalinaSOS (usaInsulinaCristalinaSOS);
-        this.setUsaInsulinaLentaDiaria (usaInsulinaLentaDiaria);
-        this.setDosisInsulinaLentaDiaria (dosisInsulinaLentaDiaria);
-        this.setFrecuenciaHorasControles (frecuenciaHorasControles);
-        this.setHoraPrimerControl (horaPrimerControl);
-    }
+                   String medicamentosOrales,
+                   boolean usaInsulinaCristalinaSOS,
+                   boolean usaInsulinaLentaDiaria,
+                   int dosisInsulinaLentaDiaria,
+                   int frecuenciaHorasControles,
+                   LocalTime horaPrimerControl,
+                   String pautaInsulinaSOS) {
+
+    this.setDietaRecomendada(dietaRecomendada);
+    this.setMedicamentosOrales(medicamentosOrales);
+    this.setUsaInsulinaCristalinaSOS(usaInsulinaCristalinaSOS);
+    this.setUsaInsulinaLentaDiaria(usaInsulinaLentaDiaria);
+    this.setDosisInsulinaLentaDiaria(dosisInsulinaLentaDiaria);
+    this.setFrecuenciaHorasControles(frecuenciaHorasControles);
+    this.setHoraPrimerControl(horaPrimerControl);
+    this.setPautaInsulinaSOS(pautaInsulinaSOS);
+}
+
 
     // setters
         
@@ -39,6 +44,10 @@ public class Tratamiento {
             this.medicamentosOrales = medicamentosOrales;
         }
     }
+    
+    public void setPautaInsulinaSOS(String pautaInsulinaSOS) {
+    this.pautaInsulinaSOS = (pautaInsulinaSOS == null) ? "" : pautaInsulinaSOS.trim();
+}
 
     public void setUsaInsulinaCristalinaSOS(boolean usaInsulinaCristalinaSOS) {
         this.usaInsulinaCristalinaSOS = usaInsulinaCristalinaSOS;
@@ -76,8 +85,8 @@ public class Tratamiento {
             return;
         }
     //editar segun el controller
-        if (frecuenciaHorasControles > 12) {
-             System.err.println("Error: La cantidad de controles (" + dosisInsulinaLentaDiaria + ") es demasiado alta.");
+        if (frecuenciaHorasControles > 24) {
+             System.err.println("Error: La cantidad de controles (" + frecuenciaHorasControles + ") es demasiado alta.");
              return;
         }
    
@@ -98,6 +107,9 @@ public class Tratamiento {
     }
      public int getDosisInsulinaLentaDiaria() {
         return dosisInsulinaLentaDiaria;
+    }
+     public String getPautaInsulinaSOS() {
+        return pautaInsulinaSOS;
     }
     
     public int getFrecuenciaHorasControles() {
