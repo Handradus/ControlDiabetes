@@ -1,4 +1,5 @@
 package modelo;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -6,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
-
 
 public class GestorPacientes {
 
@@ -18,22 +18,15 @@ public class GestorPacientes {
 
     public boolean agregarPaciente(Paciente p) {
         if (p == null) return false;
-        if (buscarPorRut(p.getRut()) != null) {
-            System.err.println("Ya existe un paciente con ese RUT.");
-            return false;
-        }
-
+        if (buscarPorRut(p.getRut()) != null) return false;
         listaPacientes.add(p);
         return true;
     }
 
     public Paciente buscarPorRut(String rut) {
         if (rut == null || rut.trim().isEmpty()) return null;
-
         for (Paciente p : listaPacientes) {
-            if (p.getRut().equalsIgnoreCase(rut)) {
-                return p;
-            }
+            if (p.getRut().equalsIgnoreCase(rut)) return p;
         }
         return null;
     }
@@ -42,40 +35,24 @@ public class GestorPacientes {
         return listaPacientes;
     }
 
-    public boolean eliminarPaciente(String rut) {
-        Paciente p = buscarPorRut(rut);
-        if (p != null) {
-            listaPacientes.remove(p);
-            return true;
-        }
-        return false;
-    }
-
-    
-    public void guardarPacientes(String nombreArchivo) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))) {
+    public void guardarPacientes(String archivo) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
             for (Paciente p : listaPacientes) {
                 Tratamiento t = p.getTratamiento();
-                String pautaSOS = (t != null && t.getPautaInsulinaSOS() != null) ? t.getPautaInsulinaSOS() : "";
-                pautaSOS = pautaSOS.replace(";", ",");
 
-
-
-                String dieta = (t != null && t.getDietaRecomendada() != null) ? t.getDietaRecomendada() : "";
-                String meds = (t != null && t.getMedicamentosOrales() != null) ? t.getMedicamentosOrales() : "";
-                boolean sos = (t != null && t.isUsaInsulinaCristalinaSOS());
+                String dieta = (t != null) ? t.getDietaRecomendada() : "";
+                String meds  = (t != null) ? t.getMedicamentosOrales() : "";
+                boolean sos  = (t != null && t.isUsaInsulinaCristalinaSOS());
                 boolean lenta = (t != null && t.isUsaInsulinaLentaDiaria());
-                int dosisLenta = (t != null && t.isUsaInsulinaLentaDiaria())
-                                                                            ? t.getDosisInsulinaLentaDiaria()
-                                                                            : 0;
-                
-
+                int dosis = (lenta && t != null) ? t.getDosisInsulinaLentaDiaria() : 0;
                 int freq = (t != null) ? t.getFrecuenciaHorasControles() : 0;
-                String frecInsulina = (t != null && t.getFrecInsulina() != null) ? t.getFrecInsulina() : "";
-                String horaPrimera = "";
-                if (t != null && t.getHoraPrimerControl() != null) {
-                    horaPrimera = t.getHoraPrimerControl().toString();
-                }
+                String frecIns = (t != null) ? t.getFrecInsulina() : "";
+                String hora = (t != null && t.getHoraPrimerControl() != null)
+                        ? t.getHoraPrimerControl().toString()
+                        : "";
+                String pauta = (t != null && t.getPautaInsulinaSOS() != null)
+                        ? t.getPautaInsulinaSOS().replace(";", ",")
+                        : "";
 
                 bw.write(
                     p.getNombre() + ";" +
@@ -86,130 +63,139 @@ public class GestorPacientes {
                     meds + ";" +
                     sos + ";" +
                     lenta + ";" +
-                    dosisLenta + ";" +
+                    dosis + ";" +
                     freq + ";" +
-                    frecInsulina + ";" +                    
-                    horaPrimera+";"+
-                    pautaSOS
-                    
+                    frecIns + ";" +
+                    hora + ";" +
+                    pauta
                 );
                 bw.newLine();
             }
         }
     }
 
-
-    public void cargarPacientes(String nombreArchivo) throws IOException {
+    public void cargarPacientes(String archivo) throws IOException {
         listaPacientes.clear();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(nombreArchivo))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                String[] partes = linea.split(";");
-                if (partes.length < 4) continue;
+                String[] p = linea.split(";");
+                if (p.length < 4) continue;
 
-                String nombre = partes[0];
-                String rut = partes[1];
-                int edad = Integer.parseInt(partes[2]);
-                String habitacion = partes[3];
+                String nombre = p[0];
+                String rut = p[1];
+                int edad = Integer.parseInt(p[2]);
+                String habitacion = p[3];
 
-                String dieta = partes.length > 4 ? partes[4] : "";
-                String medicamento = partes.length > 5 ? partes[5] : "";
-                boolean sos = partes.length > 6 && Boolean.parseBoolean(partes[6]);
-                boolean lenta = partes.length > 7 && Boolean.parseBoolean(partes[7]);
-                int dosisLenta = partes.length > 8 ? Integer.parseInt(partes[8]) : 0;
-                if (!lenta) {
-                        dosisLenta = 0;
-                    }
-                int freq = partes.length > 9 ? Integer.parseInt(partes[9]) : 0;
-                String frecInsulina = partes.length > 5 ? partes[10] : "";
-
-                LocalTime horaPrimera = null;
-                if (partes.length > 11 && !partes[11].isBlank()) {
-                    horaPrimera = LocalTime.parse(partes[11]);
-                }
-                String pautaInsulinaSOS = partes.length > 12 ? partes[12] : "";
-
+                String dieta = p.length > 4 ? p[4] : "";
+                String meds  = p.length > 5 ? p[5] : "";
+                boolean sos  = p.length > 6 && Boolean.parseBoolean(p[6]);
+                boolean lenta = p.length > 7 && Boolean.parseBoolean(p[7]);
+                int dosis = p.length > 8 ? Integer.parseInt(p[8]) : 0;
+                int freq = p.length > 9 ? Integer.parseInt(p[9]) : 0;
+                String frecIns = p.length > 10 ? p[10] : "";
+                LocalTime hora = (p.length > 11 && !p[11].isBlank())
+                        ? LocalTime.parse(p[11])
+                        : null;
+                String pauta = p.length > 12 ? p[12] : "";
 
                 Tratamiento t = new Tratamiento(
-                        dieta,
-                        medicamento,
-                        sos,
-                        lenta,
-                        dosisLenta,
-                        frecInsulina,
-                        freq,
-                        horaPrimera,
-                        pautaInsulinaSOS
+                        dieta, meds, sos, lenta, dosis,
+                        frecIns, freq, hora, pauta
                 );
 
-                Paciente p = new Paciente(nombre, rut, edad, habitacion, t);
+                Paciente pac = new Paciente(nombre, rut, edad, habitacion, t);
+                pac.recalcularProximoControl();
+                listaPacientes.add(pac);
+            }
+        }
+    }
 
-                p.getHorariosDosis().clear();
-
-                if (freq > 0 && horaPrimera != null) {
-                    LocalTime h = horaPrimera;
-
-                    for (int i = 0; i < 24; i += freq) {
-                        p.agregarHorarioDosis(new HorarioDosis(h, false, false));
-                        h = h.plusHours(freq);
-                        if (h.equals(horaPrimera)) break;
-                    }
+    public void guardarGlicemias(String archivo) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
+            for (Paciente p : listaPacientes) {
+                for (RegistroGlicemia g : p.getHistorialGlicemias()) {
+                    bw.write(
+                        p.getRut() + ";" +
+                        g.getFechaHora() + ";" +
+                        g.getValor() + ";" +
+                        g.getRegistrado()
+                    );
+                    bw.newLine();
                 }
-                p.recalcularProximoControl();    
-                listaPacientes.add(p);
             }
         }
     }
-    
-    public void guardarGlicemias(String archivoGlicemias) throws IOException {
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivoGlicemias))) {
+
+    public void cargarGlicemias(String archivo) throws IOException {
         for (Paciente p : listaPacientes) {
-            for (RegistroGlicemia g : p.getHistorialGlicemias()) {
-                bw.write(
-                    p.getRut() + ";" +
-                    g.getFechaHora() + ";" +
-                    g.getValor() + ";" +
-                    g.getRegistrado()
-                );
-                bw.newLine();
+            p.getHistorialGlicemias().clear();
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] p = linea.split(";");
+                if (p.length < 4) continue;
+
+                Paciente pac = buscarPorRut(p[0]);
+                if (pac != null) {
+                    pac.agregarRegistroGlicemia(
+                        new RegistroGlicemia(p[1], Integer.parseInt(p[2]), p[3])
+                    );
+                }
             }
         }
     }
-}
-    
-    public void cargarGlicemias(String archivoGlicemias) throws IOException {
-    for (Paciente p : listaPacientes) {
-        p.getHistorialGlicemias().clear();
-    }
 
-    try (BufferedReader br = new BufferedReader(new FileReader(archivoGlicemias))) {
-        String linea;
-        while ((linea = br.readLine()) != null) {
-            String[] partes = linea.split(";", -1);
-            if (partes.length < 4) continue;
-
-            String rut = partes[0];
-            String fechaHora = partes[1];
-            int valor = Integer.parseInt(partes[2]);
-            String registrado = partes[3];
-
-            Paciente p = buscarPorRut(rut);
-            if (p != null) {
-                p.agregarRegistroGlicemia(new RegistroGlicemia(fechaHora, valor, registrado));
+    public void guardarAlertas(String archivo) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
+            for (Paciente p : listaPacientes) {
+                for (Alerta a : p.getAlertas()) {
+                    bw.write(
+                        p.getRut() + ";" +
+                        a.getFechaHora() + ";" +
+                        a.getTipo() + ";" +
+                        a.getMensaje() + ";" +
+                        a.isAtendida()
+                    );
+                    bw.newLine();
+                }
             }
         }
     }
-}
 
- public void guardarTodo(String archivoPacientes, String archivoGlicemias) throws IOException {
-    guardarPacientes(archivoPacientes);
-    guardarGlicemias(archivoGlicemias);
-}
- 
- public void cargarTodo(String archivoPacientes, String archivoGlicemias) throws IOException {
-    cargarPacientes(archivoPacientes);
-    cargarGlicemias(archivoGlicemias);
-}
+    public void cargarAlertas(String archivo) throws IOException {
+        for (Paciente p : listaPacientes) {
+            p.getAlertas().clear();
+        }
 
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] p = linea.split(";", 5);
+                if (p.length < 5) continue;
+
+                Paciente pac = buscarPorRut(p[0]);
+                if (pac != null) {
+                    Alerta a = new Alerta(p[2], p[3], pac);
+                    a.setAtendida(Boolean.parseBoolean(p[4]));
+                    pac.agregarAlerta(a);
+                }
+            }
+        }
+    }
+
+    public void guardarTodo(String pac, String glic, String alert) throws IOException {
+        guardarPacientes(pac);
+        guardarGlicemias(glic);
+        guardarAlertas(alert);
+    }
+
+    public void cargarTodo(String pac, String glic, String alert) throws IOException {
+        cargarPacientes(pac);
+        cargarGlicemias(glic);
+        cargarAlertas(alert);
+    }
 }

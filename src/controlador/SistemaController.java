@@ -56,7 +56,7 @@ public class SistemaController {
         
         try {
             gestorUsuarios.cargarUsuarios("usuarios.txt");
-            gestorPacientes.cargarTodo("pacientes.txt", "glicemias.txt");
+            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt", "alertas.txt");
 
         } catch (IOException e) {
         
@@ -164,7 +164,7 @@ private void mostrarMenuCuidador() {
         pacienteSeleccionado.setActivo(nuevoEstado);
 
         try {
-            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt", "alertas.txt");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(
                 ventana,
@@ -361,7 +361,7 @@ private void mostrarEditarPaciente(Paciente paciente) {
         }
 
         try {
-            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt", "alertas.txt");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(ventana, "Error al guardar.");
         }
@@ -488,7 +488,7 @@ private void listarPacientes() {
         if (agregado) {
             panel.mostrarInfo("Paciente registrado correctamente.");
             try {
-                gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+                gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt", "alertas.txt");
 
             } catch (IOException ex) {
                 panel.mostrarError("Paciente guardado en memoria, pero falló al escribir archivo.");
@@ -565,7 +565,10 @@ private void abrirRegistrarGlicemia() {
 
     p.agregarRegistroGlicemia(reg);
 
+    p.generarAlertaPorGlicemia(reg);
+
     p.avanzarProximoControlTrasRegistro();
+
     
     Tratamiento t = p.getTratamiento();
 
@@ -600,7 +603,7 @@ private void abrirRegistrarGlicemia() {
     }
 
     try {
-        gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+        gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt", "alertas.txt");
     } catch (IOException ex) {
         panelRegistrarGlicemia.mostrarError("Error al guardar.");
         return;
@@ -755,9 +758,6 @@ private void abrirTratamientoParaEdicion(Paciente p) {
             dosisLenta = Integer.parseInt(panelTratamiento.getDosisTxt().getText().trim());
         }
 
-        // ✅ ESTO FALTABA
-        
-
         int frecuencia = Integer.parseInt(panelTratamiento.getFreqTxt().getText().trim());
 
         String hSel = (String) panelTratamiento.getHoraCombo().getSelectedItem();
@@ -780,7 +780,7 @@ private void abrirTratamientoParaEdicion(Paciente p) {
 
 
         p.setTratamiento(nuevoT);
-        gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
+        gestorPacientes.cargarTodo("pacientes.txt", "glicemias.txt", "alertas.txt");
 
         JOptionPane.showMessageDialog(ventana, "Tratamiento guardado correctamente.");
         ventana.mostrarPanel(panelCuidador);
@@ -801,36 +801,44 @@ private void abrirTratamientoParaEdicion(Paciente p) {
   
            
 
-   private void cargarAlertasPaciente(Paciente p) {
+    private void cargarAlertasPaciente(Paciente p) {
 
-    DefaultTableModel modelo = (DefaultTableModel) panelCuidador.getAlertasTabla().getModel();
-    modelo.setRowCount(0);
+        DefaultTableModel modelo =
+            (DefaultTableModel) panelCuidador.getAlertasTabla().getModel();
 
-    if (p == null) {
-        modelo.addRow(new Object[]{"-", "-", "Sin paciente seleccionado"});
-        return;
+        modelo.setRowCount(0);
+
+        if (p == null) {
+            modelo.addRow(new Object[]{"-", "-", "Sin paciente seleccionado"});
+            return;
+        }
+        for (Alerta a : p.getAlertas()) {
+
+            String[] partes = a.getFechaHora().split(" ");
+            String fecha = partes.length > 0 ? partes[0] : "-";
+            String hora  = partes.length > 1 ? partes[1] : "-";
+
+            modelo.addRow(new Object[]{
+                fecha,
+                hora,
+                a.getTipo() + " - " + a.getMensaje()
+            });
+        }
+        if (p.getProximoControl() != null) {
+
+            DateTimeFormatter fFecha =
+                DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            DateTimeFormatter fHora =
+                DateTimeFormatter.ofPattern("HH:mm");
+
+            modelo.addRow(new Object[]{
+                p.getProximoControl().toLocalDate().format(fFecha),
+                p.getProximoControl().toLocalTime().format(fHora),
+                "PRÓXIMO CONTROL"
+            });
+        }
     }
 
-    if (p.getProximoControl() == null) {
-        modelo.addRow(new Object[]{"-", "-", "No hay próximo control agendado"});
-        return;
-    }
-
-    DateTimeFormatter fFecha = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    DateTimeFormatter fHora  = DateTimeFormatter.ofPattern("HH:mm");
-
-    modelo.addRow(new Object[]{
-        p.getProximoControl().toLocalDate().format(fFecha),
-        p.getProximoControl().toLocalTime().format(fHora),
-        "PRÓXIMO CONTROL"
-    });
-}
-
-    
-  
-    
-
-   
 
 
 
@@ -858,7 +866,7 @@ private void abrirTratamientoParaEdicion(Paciente p) {
         return;
     }
 
-    String nombreUsuario = (String) panelAdmin.getTabla().getValueAt(fila, 0); // columna "Usuario"
+    String nombreUsuario = (String) panelAdmin.getTabla().getValueAt(fila, 0);
 
     int resp = JOptionPane.showConfirmDialog(
         ventana,

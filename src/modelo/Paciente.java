@@ -1,4 +1,5 @@
 package modelo;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,7 +14,7 @@ public class Paciente {
     private LocalDateTime proximoControl;
 
     private boolean activo;
-    private Tratamiento tratamiento;  
+    private Tratamiento tratamiento;
 
     private ArrayList<RegistroGlicemia> historialGlicemias;
     private ArrayList<HorarioDosis> horariosDosis;
@@ -33,35 +34,31 @@ public class Paciente {
     }
 
     public void setNombre(String nombre) {
-        if (nombre != null && !nombre.trim().isEmpty()){
+        if (nombre != null && !nombre.trim().isEmpty()) {
             this.nombre = nombre;
         }
     }
-    
-    
 
     public void setRut(String rut) {
-        if (rut != null && !rut.trim().isEmpty()){
+        if (rut != null && !rut.trim().isEmpty()) {
             this.rut = rut;
         }
     }
 
     public void setHabitacion(String habitacion) {
-        if (habitacion != null && !habitacion.trim().isEmpty()){
+        if (habitacion != null && !habitacion.trim().isEmpty()) {
             this.habitacion = habitacion;
         }
     }
 
-   public void setTratamiento(Tratamiento tratamiento) {
-    this.tratamiento = tratamiento;
-    if (tratamiento != null) {
-        recalcularProximoControl();
-    } else {
-        proximoControl = null;
+    public void setTratamiento(Tratamiento tratamiento) {
+        this.tratamiento = tratamiento;
+        if (tratamiento != null) {
+            recalcularProximoControl();
+        } else {
+            proximoControl = null;
+        }
     }
-}
-
-
 
     public void setEdad(int edad) {
 
@@ -69,8 +66,6 @@ public class Paciente {
             System.err.println("Error: La edad no puede ser un número negativo.");
             return;
         }
-
-        
 
         if (edad > 120) {
             System.err.println("Error: La edad ingresada (" + edad + ") es irrealmente alta.");
@@ -83,7 +78,7 @@ public class Paciente {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
-    
+
     public String getNombre() {
         return nombre;
     }
@@ -92,11 +87,6 @@ public class Paciente {
         return rut;
     }
 
-    public LocalDateTime getProximoControl() {
-        return proximoControl;
-    }
-
-    
     public int getEdad() {
         return edad;
     }
@@ -113,6 +103,10 @@ public class Paciente {
         return tratamiento;
     }
 
+    public LocalDateTime getProximoControl() {
+        return proximoControl;
+    }
+
     public ArrayList<RegistroGlicemia> getHistorialGlicemias() {
         return historialGlicemias;
     }
@@ -124,7 +118,6 @@ public class Paciente {
     public ArrayList<Alerta> getAlertas() {
         return alertas;
     }
-
 
     public void agregarRegistroGlicemia(RegistroGlicemia registro) {
         if (registro != null) {
@@ -144,6 +137,87 @@ public class Paciente {
         }
     }
 
+    public void generarAlertaPorGlicemia(RegistroGlicemia r) {
+
+        if (r == null) return;
+
+        int valor = r.getValor();
+        Alerta alerta = null;
+
+        if (valor < 70) {
+            alerta = new Alerta(
+                "HIPOGLICEMIA",
+                "Glicemia baja (" + valor + ")",
+                this
+            );
+        } else if (valor > 300) {
+            alerta = new Alerta(
+                "CRITICA",
+                "Glicemia crítica (" + valor + ")",
+                this
+            );
+        } else if (valor > 180) {
+            alerta = new Alerta(
+                "HIPERGLICEMIA",
+                "Glicemia elevada (" + valor + ")",
+                this
+            );
+        }
+
+        if (alerta != null) {
+            this.alertas.add(alerta);
+        }
+    }
+
+    public void recalcularProximoControl() {
+
+        if (tratamiento == null) {
+            proximoControl = null;
+            return;
+        }
+
+        int freq = tratamiento.getFrecuenciaHorasControles();
+        LocalTime primer = tratamiento.getHoraPrimerControl();
+
+        if (freq <= 0 || primer == null) {
+            proximoControl = null;
+            return;
+        }
+
+        LocalDateTime ahora = LocalDateTime.now();
+        LocalDate hoy = ahora.toLocalDate();
+
+        LocalDateTime candidato = LocalDateTime.of(hoy, primer);
+
+        while (candidato.isBefore(ahora)) {
+            candidato = candidato.plusHours(freq);
+        }
+
+        proximoControl = candidato;
+    }
+
+    public void avanzarProximoControlTrasRegistro() {
+
+        if (tratamiento == null) return;
+
+        int freq = tratamiento.getFrecuenciaHorasControles();
+        LocalTime primer = tratamiento.getHoraPrimerControl();
+
+        if (freq <= 0 || primer == null) return;
+
+        if (proximoControl == null) {
+            recalcularProximoControl();
+            return;
+        }
+
+        proximoControl = proximoControl.plusHours(freq);
+
+        LocalDateTime ahora = LocalDateTime.now();
+        while (!proximoControl.isAfter(ahora)) {
+            proximoControl = proximoControl.plusHours(freq);
+        }
+    }
+
     @Override
     public String toString() {
         return "Paciente{" +
@@ -157,60 +231,4 @@ public class Paciente {
                 ", alertas=" + alertas +
                 '}';
     }
-
-   public void recalcularProximoControl() {
-    if (tratamiento == null) {
-        proximoControl = null;
-        return;
-    }
-
-    int freq = tratamiento.getFrecuenciaHorasControles();
-    LocalTime primer = tratamiento.getHoraPrimerControl();
-
-    if (freq <= 0 || primer == null) {
-        proximoControl = null;
-        return;
-    }
-
-    LocalDateTime ahora = LocalDateTime.now();
-    LocalDate hoy = ahora.toLocalDate();
-
-    LocalDateTime candidato = LocalDateTime.of(hoy, primer);
-
-    
-    while (candidato.isBefore(ahora)) {
-        candidato = candidato.plusHours(freq);
-    }
-
-    proximoControl = candidato;
-}
-
-    
-    
-    
-    public void avanzarProximoControlTrasRegistro() {
-    if (tratamiento == null) return;
-
-    int freq = tratamiento.getFrecuenciaHorasControles();
-    LocalTime primer = tratamiento.getHoraPrimerControl();
-    if (freq <= 0 || primer == null) return;
-
-    if (proximoControl == null) {
-        recalcularProximoControl();
-        return;
-    }
-
-    proximoControl = proximoControl.plusHours(freq);
-
-    // por si estaba atrasado (ej: el sistema estuvo cerrado), empújalo al futuro
-    LocalDateTime ahora = LocalDateTime.now();
-    while (!proximoControl.isAfter(ahora)) {
-        proximoControl = proximoControl.plusHours(freq);
-    }
-}
-    
-    
-    
-
-
 }

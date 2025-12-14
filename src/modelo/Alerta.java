@@ -8,8 +8,8 @@ public class Alerta {
     private String tipo;
     private String mensaje;
     private String fechaHora;
-    private Paciente paciente;
     private boolean atendida;
+    private Paciente paciente;
 
     public Alerta(String tipo, String mensaje, Paciente paciente) {
         this.setTipo(tipo);
@@ -58,20 +58,17 @@ public class Alerta {
         return fechaHora;
     }
 
-    public Paciente getPaciente() {
-        return paciente;
-    }
-
     public boolean isAtendida() {
         return atendida;
     }
 
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
     @Override
     public String toString() {
-        String nombre = "Sin paciente";
-        if (paciente != null) {
-            nombre = paciente.getNombre();
-        }
+        String nombre = paciente != null ? paciente.getNombre() : "Sin paciente";
         return "[" + fechaHora + "] (" + tipo + ") " + nombre + ": " + mensaje;
     }
 }

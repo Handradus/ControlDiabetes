@@ -36,6 +36,7 @@ public class PanelMenuCuidador extends javax.swing.JPanel {
         new Object[][]{},
         new String[]{"Fecha", "Hora", "Tipo"}
     ));
+
 }
 
 
