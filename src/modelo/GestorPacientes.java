@@ -68,9 +68,10 @@ public class GestorPacientes {
                 int dosisLenta = (t != null && t.isUsaInsulinaLentaDiaria())
                                                                             ? t.getDosisInsulinaLentaDiaria()
                                                                             : 0;
+                
 
                 int freq = (t != null) ? t.getFrecuenciaHorasControles() : 0;
-
+                String frecInsulina = (t != null && t.getFrecInsulina() != null) ? t.getFrecInsulina() : "";
                 String horaPrimera = "";
                 if (t != null && t.getHoraPrimerControl() != null) {
                     horaPrimera = t.getHoraPrimerControl().toString();
@@ -87,6 +88,7 @@ public class GestorPacientes {
                     lenta + ";" +
                     dosisLenta + ";" +
                     freq + ";" +
+                    frecInsulina + ";" +                    
                     horaPrimera+";"+
                     pautaSOS
                     
@@ -120,12 +122,13 @@ public class GestorPacientes {
                         dosisLenta = 0;
                     }
                 int freq = partes.length > 9 ? Integer.parseInt(partes[9]) : 0;
+                String frecInsulina = partes.length > 5 ? partes[10] : "";
 
                 LocalTime horaPrimera = null;
-                if (partes.length > 10 && !partes[10].isBlank()) {
-                    horaPrimera = LocalTime.parse(partes[10]);
+                if (partes.length > 11 && !partes[11].isBlank()) {
+                    horaPrimera = LocalTime.parse(partes[11]);
                 }
-                String pautaInsulinaSOS = partes.length > 11 ? partes[11] : "";
+                String pautaInsulinaSOS = partes.length > 12 ? partes[12] : "";
 
 
                 Tratamiento t = new Tratamiento(
@@ -134,6 +137,7 @@ public class GestorPacientes {
                         sos,
                         lenta,
                         dosisLenta,
+                        frecInsulina,
                         freq,
                         horaPrimera,
                         pautaInsulinaSOS

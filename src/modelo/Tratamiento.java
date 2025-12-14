@@ -10,25 +10,30 @@ public class Tratamiento {
     private boolean usaInsulinaCristalinaSOS;
     private boolean usaInsulinaLentaDiaria;
     private int dosisInsulinaLentaDiaria; 
+    private String frecInsulina;
     private String pautaInsulinaSOS;
 
     private int frecuenciaHorasControles;
     private LocalTime horaPrimerControl;
 
-    public Tratamiento(String dietaRecomendada,
-                   String medicamentosOrales,
-                   boolean usaInsulinaCristalinaSOS,
-                   boolean usaInsulinaLentaDiaria,
-                   int dosisInsulinaLentaDiaria,
-                   int frecuenciaHorasControles,
-                   LocalTime horaPrimerControl,
-                   String pautaInsulinaSOS) {
+   public Tratamiento(
+                    String dietaRecomendada,
+                    String medicamentosOrales,
+                    boolean usaInsulinaCristalinaSOS,
+                    boolean usaInsulinaLentaDiaria,
+                    int dosisInsulinaLentaDiaria,
+                    String frecInsulina,
+                    int frecuenciaHorasControles,
+                    LocalTime horaPrimerControl,
+                    String pautaInsulinaSOS
+                  ) {
 
     this.setDietaRecomendada(dietaRecomendada);
     this.setMedicamentosOrales(medicamentosOrales);
     this.setUsaInsulinaCristalinaSOS(usaInsulinaCristalinaSOS);
     this.setUsaInsulinaLentaDiaria(usaInsulinaLentaDiaria);
     this.setDosisInsulinaLentaDiaria(dosisInsulinaLentaDiaria);
+    this.setFrecInsulina(frecInsulina);
     this.setFrecuenciaHorasControles(frecuenciaHorasControles);
     this.setHoraPrimerControl(horaPrimerControl);
     this.setPautaInsulinaSOS(pautaInsulinaSOS);
@@ -39,6 +44,11 @@ public class Tratamiento {
             this.medicamentosOrales = medicamentosOrales;
         }
     }
+
+    public void setFrecInsulina(String frecInsulina) {
+        this.frecInsulina = frecInsulina;
+    }
+    
     
     public void setPautaInsulinaSOS(String pautaInsulinaSOS) {
     this.pautaInsulinaSOS = (pautaInsulinaSOS == null) ? "" : pautaInsulinaSOS.trim();
@@ -102,6 +112,11 @@ public class Tratamiento {
      public int getDosisInsulinaLentaDiaria() {
         return dosisInsulinaLentaDiaria;
     }
+
+    public String getFrecInsulina() {
+        return frecInsulina;
+    }
+     
      public String getPautaInsulinaSOS() {
         return pautaInsulinaSOS;
     }
@@ -121,14 +136,8 @@ public class Tratamiento {
 
     @Override
     public String toString() {
-        return "Tratamiento{" +
-                "dieta='" + dietaRecomendada + '\'' +
-                ", medsOrales='" + medicamentosOrales + '\'' +
-                ", insulinaSOS=" + usaInsulinaCristalinaSOS +
-                ", insulinaLenta=" + usaInsulinaLentaDiaria +
-                ", dosisLenta=" + dosisInsulinaLentaDiaria +
-                ", freqControles=" + frecuenciaHorasControles +
-                ", horaPrimerControl=" + horaPrimerControl +
-                '}';
+        return "Tratamiento{" + "dietaRecomendada=" + dietaRecomendada + ", medicamentosOrales=" + medicamentosOrales + ", usaInsulinaCristalinaSOS=" + usaInsulinaCristalinaSOS + ", usaInsulinaLentaDiaria=" + usaInsulinaLentaDiaria + ", dosisInsulinaLentaDiaria=" + dosisInsulinaLentaDiaria + ", frecInsulina=" + frecInsulina + ", pautaInsulinaSOS=" + pautaInsulinaSOS + ", frecuenciaHorasControles=" + frecuenciaHorasControles + ", horaPrimerControl=" + horaPrimerControl + '}';
     }
+
+    
 }

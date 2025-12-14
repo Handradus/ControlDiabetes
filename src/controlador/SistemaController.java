@@ -302,8 +302,9 @@ private void filtrarPacientesPorRut() {
        
         panelAdmin.getIngresarCuidadorBtn().addActionListener(e -> crearCuidador());
         panelAdmin.getListarCBtn().addActionListener(e -> listarCuidadores());
-        
+               
         panelAdmin.getLogoutBtn().addActionListener(e -> cerrarSesion());
+        panelAdmin.getDelCuidadorBtn().addActionListener(e -> eliminarCuidadorSeleccionado());
         ventana.mostrarPanel(panelAdmin);
     }
 
@@ -649,6 +650,8 @@ private void abrirTratamientoPaciente() {
 
     if (p.getTratamiento() != null) {
         Tratamiento t = p.getTratamiento();
+        
+        
 
         panelTratamiento.getDietaTxt().setText(t.getDietaRecomendada());
         panelTratamiento.getMedsTxt().setText(t.getMedicamentosOrales());
@@ -705,7 +708,7 @@ private void abrirTratamientoParaEdicion(Paciente p) {
 
         panelTratamiento.getDietaTxt().setText(t.getDietaRecomendada());
         panelTratamiento.getMedsTxt().setText(t.getMedicamentosOrales());
-
+                  
         chkSos.setSelected(t.isUsaInsulinaCristalinaSOS());
         panelTratamiento.habilitarPautaSOS(chkSos.isSelected());
         panelTratamiento.getPautaSosTxt().setText(
@@ -738,25 +741,30 @@ private void abrirTratamientoParaEdicion(Paciente p) {
     });
 
     panelTratamiento.getSaveTtoBtn().addActionListener(e -> {
-        try {
-            String dieta = panelTratamiento.getDietaTxt().getText().trim();
-            String meds  = panelTratamiento.getMedsTxt().getText().trim();
+    try {
+        String dieta = panelTratamiento.getDietaTxt().getText().trim();
+        String meds  = panelTratamiento.getMedsTxt().getText().trim();
 
-            boolean usaSos   = chkSos.isSelected();
-            boolean usaLenta = chkLenta.isSelected();
+        boolean usaSos   = chkSos.isSelected();
+        boolean usaLenta = chkLenta.isSelected();
 
-            String pautaSOS = usaSos ? panelTratamiento.getPautaSosTxt().getText().trim() : "";
+        String pautaSOS = usaSos ? panelTratamiento.getPautaSosTxt().getText().trim() : "";
 
-            int dosisLenta = 0;
-            if (usaLenta) {
-                dosisLenta = Integer.parseInt(panelTratamiento.getDosisTxt().getText().trim());
-            }
+        int dosisLenta = 0;
+        if (usaLenta) {
+            dosisLenta = Integer.parseInt(panelTratamiento.getDosisTxt().getText().trim());
+        }
 
-            int frecuencia = Integer.parseInt(panelTratamiento.getFreqTxt().getText().trim());
+        // ✅ ESTO FALTABA
+        
 
-            String hSel = (String) panelTratamiento.getHoraCombo().getSelectedItem();
-            String mSel = (String) panelTratamiento.getMinCombo().getSelectedItem();
-            LocalTime horaPrimerControl = LocalTime.of(Integer.parseInt(hSel), Integer.parseInt(mSel));
+        int frecuencia = Integer.parseInt(panelTratamiento.getFreqTxt().getText().trim());
+
+        String hSel = (String) panelTratamiento.getHoraCombo().getSelectedItem();
+        String mSel = (String) panelTratamiento.getMinCombo().getSelectedItem();
+        LocalTime horaPrimerControl = LocalTime.of(Integer.parseInt(hSel), Integer.parseInt(mSel));
+
+           String frecInsulina = (String) panelTratamiento.getComboFreqInsulinaLenta().getSelectedItem();
 
             Tratamiento nuevoT = new Tratamiento(
                 dieta,
@@ -764,24 +772,27 @@ private void abrirTratamientoParaEdicion(Paciente p) {
                 usaSos,
                 usaLenta,
                 dosisLenta,
+                frecInsulina,
                 frecuencia,
                 horaPrimerControl,
                 pautaSOS
             );
 
-            p.setTratamiento(nuevoT);
-            gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
 
-            JOptionPane.showMessageDialog(ventana, "Tratamiento guardado correctamente.");
-            ventana.mostrarPanel(panelCuidador);
-            listarPacientes();
+        p.setTratamiento(nuevoT);
+        gestorPacientes.guardarTodo("pacientes.txt", "glicemias.txt");
 
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(ventana, "Revisa dosis y frecuencia.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(ventana, "Error al guardar archivos.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    });
+        JOptionPane.showMessageDialog(ventana, "Tratamiento guardado correctamente.");
+        ventana.mostrarPanel(panelCuidador);
+        listarPacientes();
+
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(ventana, "Revisa dosis y frecuencia.", "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(ventana, "Error al guardar archivos.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+});
+
 
     panelTratamiento.getVolverBtn().addActionListener(e -> ventana.mostrarPanel(panelCuidador));
 
@@ -838,6 +849,50 @@ private void abrirTratamientoParaEdicion(Paciente p) {
                 a.getMensaje()
             });
         }*/
+
+    private void eliminarCuidadorSeleccionado() {
+
+    int fila = panelAdmin.getTabla().getSelectedRow();
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(ventana, "Seleccione un cuidador en la tabla.");
+        return;
+    }
+
+    String nombreUsuario = (String) panelAdmin.getTabla().getValueAt(fila, 0); // columna "Usuario"
+
+    int resp = JOptionPane.showConfirmDialog(
+        ventana,
+        "¿Seguro que deseas eliminar al cuidador '" + nombreUsuario + "'?",
+        "Confirmar eliminación",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.WARNING_MESSAGE
+    );
+
+    if (resp != JOptionPane.YES_OPTION) return;
+
+    boolean eliminado = gestorUsuarios.eliminarCuidador(nombreUsuario);
+
+    if (!eliminado) {
+        JOptionPane.showMessageDialog(ventana, "No se pudo eliminar (¿no era cuidador?).");
+        return;
+    }
+
+    try {
+        gestorUsuarios.archivar("usuarios.txt");
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(
+            ventana,
+            "Se eliminó en memoria, pero falló al guardar en archivo.",
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+        );
+        return;
+    }
+
+    JOptionPane.showMessageDialog(ventana, "Cuidador eliminado.");
+    listarCuidadores();
+}
+
    
 }
 

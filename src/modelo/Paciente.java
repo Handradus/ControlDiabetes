@@ -70,9 +70,7 @@ public class Paciente {
             return;
         }
 
-        if (edad < 18) {
-            System.err.println("Advertencia: El usuario es menor de edad.");
-        }
+        
 
         if (edad > 120) {
             System.err.println("Error: La edad ingresada (" + edad + ") es irrealmente alta.");
@@ -160,8 +158,8 @@ public class Paciente {
                 '}';
     }
 
-    public void recalcularProximoControl() {
-       if (tratamiento == null) {
+   public void recalcularProximoControl() {
+    if (tratamiento == null) {
         proximoControl = null;
         return;
     }
@@ -177,16 +175,16 @@ public class Paciente {
     LocalDateTime ahora = LocalDateTime.now();
     LocalDate hoy = ahora.toLocalDate();
 
-    
     LocalDateTime candidato = LocalDateTime.of(hoy, primer);
 
     
-    while (!candidato.isAfter(ahora)) {
+    while (candidato.isBefore(ahora)) {
         candidato = candidato.plusHours(freq);
     }
 
     proximoControl = candidato;
-    }
+}
+
     
     
     

@@ -47,6 +47,23 @@ public class GestorUsuarios {
         usuarios.add(nuevo);
         return true;
     }
+    
+
+    public boolean eliminarCuidador(String nombreUsuario) {
+        if (nombreUsuario == null || nombreUsuario.trim().isEmpty()) return false;
+
+        for (int i = 0; i < usuarios.size(); i++) {
+            Usuario u = usuarios.get(i);
+
+            // Solo cuidadores se pueden eliminar
+            if (u instanceof Cuidador && u.getNombreUsuario().equals(nombreUsuario)) {
+                usuarios.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public ArrayList<Usuario> getUsuarios() {
         return usuarios;

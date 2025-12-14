@@ -23,6 +23,12 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
         return listarCBtn;
     }
 
+    public JButton getDelCuidadorBtn() {
+        return delCuidadorBtn;
+    }
+    
+    
+
     public JButton getListarPBtn() {
         return listarPBtn;
     }
@@ -72,6 +78,7 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
         nombreCTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        delCuidadorBtn = new javax.swing.JButton();
 
         listarPBtn.setText("Listar Pacientes");
         listarPBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -127,6 +134,13 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
 
         jLabel3.setText("Password Cuidador");
 
+        delCuidadorBtn.setText("Eliminar Cuidador");
+        delCuidadorBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                delCuidadorBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -141,26 +155,31 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
                         .addComponent(listarPBtn)))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(64, 64, 64)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(37, 37, 37)
-                        .addComponent(nombreCTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addComponent(PassTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(295, 295, 295)
-                        .addComponent(ingresarCuidadorBtn)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(180, 180, 180)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(logoutBtn)
                 .addGap(47, 47, 47))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(37, 37, 37)
+                                .addComponent(nombreCTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addComponent(PassTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(295, 295, 295)
+                                .addComponent(ingresarCuidadorBtn))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(176, 176, 176)
+                        .addComponent(delCuidadorBtn)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,7 +204,9 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
                     .addComponent(listarPBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(103, 103, 103))
+                .addGap(33, 33, 33)
+                .addComponent(delCuidadorBtn)
+                .addGap(47, 47, 47))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -209,9 +230,14 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_nombreCTxtActionPerformed
 
+    private void delCuidadorBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delCuidadorBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_delCuidadorBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPasswordField PassTxt;
+    private javax.swing.JButton delCuidadorBtn;
     private javax.swing.JButton ingresarCuidadorBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -223,4 +249,8 @@ public class PanelMenuAdmin extends javax.swing.JPanel {
     private javax.swing.JTextField nombreCTxt;
     private javax.swing.JTable tabla;
     // End of variables declaration//GEN-END:variables
+
+    public Object getEliminarCuidadorBtn() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
