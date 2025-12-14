@@ -21,34 +21,45 @@ public class Paciente {
     private ArrayList<Alerta> alertas;
 
     public Paciente(String nombre, String rut, int edad, String habitacion, Tratamiento tratamiento) {
+        this.historialGlicemias = new ArrayList<>();
+        this.horariosDosis = new ArrayList<>();
+        this.alertas = new ArrayList<>();
+
+        this.activo = true;
+
         this.setNombre(nombre);
         this.setRut(rut);
         this.setEdad(edad);
         this.setHabitacion(habitacion);
         this.setTratamiento(tratamiento);
-
-        this.activo = true;
-        this.historialGlicemias = new ArrayList<>();
-        this.horariosDosis = new ArrayList<>();
-        this.alertas = new ArrayList<>();
     }
 
     public void setNombre(String nombre) {
-        if (nombre != null && !nombre.trim().isEmpty()) {
-            this.nombre = nombre;
+        if (!Utilidades.esTextoVacio(nombre) && Utilidades.esSoloLetras(nombre)) {
+            this.nombre = Utilidades.normalizarNombre(nombre);
         }
     }
 
     public void setRut(String rut) {
-        if (rut != null && !rut.trim().isEmpty()) {
-            this.rut = rut;
+        if (!Utilidades.esTextoVacio(rut) && Utilidades.esRutValido(rut)) {
+            this.rut = Utilidades.formatearRut(rut);
         }
     }
 
     public void setHabitacion(String habitacion) {
-        if (habitacion != null && !habitacion.trim().isEmpty()) {
-            this.habitacion = habitacion;
+        if (!Utilidades.esTextoVacio(habitacion)) {
+            this.habitacion = habitacion.trim().toUpperCase();
         }
+    }
+
+    public void setEdad(int edad) {
+        if (Utilidades.estaEnRango(edad, 0, 120)) {
+            this.edad = edad;
+        }
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     public void setTratamiento(Tratamiento tratamiento) {
@@ -58,25 +69,6 @@ public class Paciente {
         } else {
             proximoControl = null;
         }
-    }
-
-    public void setEdad(int edad) {
-
-        if (edad < 0) {
-            System.err.println("Error: La edad no puede ser un número negativo.");
-            return;
-        }
-
-        if (edad > 120) {
-            System.err.println("Error: La edad ingresada (" + edad + ") es irrealmente alta.");
-            return;
-        }
-
-        this.edad = edad;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
     }
 
     public String getNombre() {
@@ -120,9 +112,11 @@ public class Paciente {
     }
 
     public void agregarRegistroGlicemia(RegistroGlicemia registro) {
-        if (registro != null) {
-            this.historialGlicemias.add(registro);
-        }
+        if (registro == null) return;
+
+        this.historialGlicemias.add(registro);
+        generarAlertaPorGlicemia(registro);
+        avanzarProximoControlTrasRegistro();
     }
 
     public void agregarHorarioDosis(HorarioDosis horario) {

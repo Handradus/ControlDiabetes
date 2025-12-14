@@ -15,13 +15,11 @@ public class PanelRegistrarGlicemia extends javax.swing.JPanel {
     public void setNombreLbl(JLabel nombreLbl) {
         this.nombreLbl = nombreLbl;
     }
-    
-    public void setNombrePaciente(String nombre) {
-    nombreLbl.setText(nombre);
-}
 
-    
-    
+    public void setNombrePaciente(String nombre) {
+        nombreLbl.setText(nombre);
+    }
+
     public javax.swing.JTextField getValorTxt() {
         return valorTxt;
     }
@@ -34,15 +32,23 @@ public class PanelRegistrarGlicemia extends javax.swing.JPanel {
         return volverBtn;
     }
 
-    
     public void mostrarError(String mensaje) {
-        javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        javax.swing.JOptionPane.showMessageDialog(
+            this,
+            mensaje,
+            "Error",
+            javax.swing.JOptionPane.ERROR_MESSAGE
+        );
     }
 
     public void mostrarInfo(String mensaje) {
-        javax.swing.JOptionPane.showMessageDialog(this, mensaje, "Información", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        javax.swing.JOptionPane.showMessageDialog(
+            this,
+            mensaje,
+            "Información",
+            javax.swing.JOptionPane.INFORMATION_MESSAGE
+        );
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.

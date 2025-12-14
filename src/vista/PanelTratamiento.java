@@ -4,34 +4,47 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
-
 public class PanelTratamiento extends javax.swing.JPanel {
+
     public PanelTratamiento() {
         initComponents();
         sosCheck.addActionListener(e -> habilitarPautaSOS(sosCheck.isSelected()));
-        
+        insulinaCheck.addActionListener(e -> habilitarDosisLenta(insulinaCheck.isSelected()));
+
         habilitarPautaSOS(sosCheck.isSelected());
-            
+        habilitarDosisLenta(insulinaCheck.isSelected());
+
         bloquearCampos();
         inicializarCombosHora();
         inicializarComboFrecLenta();
-
     }
+
+
+    public void limpiarDosis() {
+        dosisTxt.setText("");
+    }
+
     private void inicializarCombosHora() {
-    horaCombo.removeAllItems();
-    for (int h = 0; h < 24; h++) {
-        horaCombo.addItem(String.format("%02d", h));
+        horaCombo.removeAllItems();
+        for (int h = 0; h < 24; h++) {
+            horaCombo.addItem(String.format("%02d", h));
+        }
+
+        minCombo.removeAllItems();
+        minCombo.addItem("00");
+        minCombo.addItem("15");
+        minCombo.addItem("30");
+        minCombo.addItem("45");
     }
 
-    minCombo.removeAllItems();
-    minCombo.addItem("00");
-    minCombo.addItem("15");
-    minCombo.addItem("30");
-    minCombo.addItem("45");
-}
+    private void inicializarComboFrecLenta() {
+        comboFreqInsulinaLenta.removeAllItems();
+        comboFreqInsulinaLenta.addItem("1 vez al día");
+        comboFreqInsulinaLenta.addItem("2 veces al día");
+    }
 
-    public javax.swing.JButton getEditarBtn() {
-      return editarBtn;
+    public JButton getEditarBtn() {
+        return editarBtn;
     }
 
     public JTextField getPautaSosTxt() {
@@ -41,24 +54,21 @@ public class PanelTratamiento extends javax.swing.JPanel {
     public JComboBox<String> getComboFreqInsulinaLenta() {
         return comboFreqInsulinaLenta;
     }
-    
-    
 
-  
-    public javax.swing.JTextField getNombreTxt() { 
-        return nombreTxt; 
+    public JTextField getNombreTxt() {
+        return nombreTxt;
     }
-    
-    public javax.swing.JTextField getRutTxt() { 
-        return rutTxt; 
+
+    public JTextField getRutTxt() {
+        return rutTxt;
     }
-    
-    public javax.swing.JTextField getDietaTxt() { 
-        return dietaTxt; 
+
+    public JTextField getDietaTxt() {
+        return dietaTxt;
     }
-    
-    public javax.swing.JTextField getMedsTxt() { 
-        return medsTxt; 
+
+    public JTextField getMedsTxt() {
+        return medsTxt;
     }
 
     public JCheckBox getSosCheck() {
@@ -68,89 +78,21 @@ public class PanelTratamiento extends javax.swing.JPanel {
     public JCheckBox getInsulinaCheck() {
         return insulinaCheck;
     }
-    
-    
-    
-    
-    
-    public javax.swing.JTextField getDosisTxt() { 
-        return dosisTxt; 
-    }
-    
-    public javax.swing.JTextField getFreqTxt() { 
-        return freqTxt; 
+
+    public JTextField getDosisTxt() {
+        return dosisTxt;
     }
 
-    
-    
-    
-    
-    public javax.swing.JButton getVolverBtn() { 
-        return volverBtn; 
+    public JTextField getFreqTxt() {
+        return freqTxt;
+    }
+
+    public JButton getVolverBtn() {
+        return volverBtn;
     }
 
     public JButton getSaveTtoBtn() {
         return saveTtoBtn;
-    }
-    
-    
-    public void habilitarDosisLenta(boolean habilitar) {
-    dosisTxt.setEnabled(habilitar);
-    }
-    public void limpiarDosis() {
-        dosisTxt.setText("");
-    }
-    
-public void modoLectura() {
-    insulinaCheck.setEnabled(false);
-    sosCheck.setEnabled(false);
-
-    dietaTxt.setEditable(false);
-    medsTxt.setEditable(false);
-    freqTxt.setEditable(false);
-
-    horaCombo.setEnabled(false);
-    minCombo.setEnabled(false);
-
-    saveTtoBtn.setEnabled(false);
-    editarBtn.setEnabled(true);
-
-    habilitarDosisLenta(insulinaCheck.isSelected());
-}
-
-
-public void modoEdicion() {
-    insulinaCheck.setEnabled(true);
-    sosCheck.setEnabled(true);
-
-    dietaTxt.setEditable(true);
-    medsTxt.setEditable(true);
-    freqTxt.setEditable(true);
-
-    horaCombo.setEnabled(true);
-    minCombo.setEnabled(true);
-
-    saveTtoBtn.setEnabled(true);
-    editarBtn.setEnabled(false);
-    
-    habilitarDosisLenta(insulinaCheck.isSelected());
-}
-
-
-
-
-    
-    public void bloquearCampos() {
-        nombreTxt.setEnabled(false);
-        rutTxt.setEnabled(false);
-        
-        dietaTxt.setEnabled(true);
-        medsTxt.setEnabled(true);
-        sosCheck.setEnabled(true);
-        insulinaCheck.setEnabled(true);
-        dosisTxt.setEnabled(true);
-        freqTxt.setEnabled(true);
-       
     }
 
     public JComboBox<String> getHoraCombo() {
@@ -160,14 +102,65 @@ public void modoEdicion() {
     public JComboBox<String> getMinCombo() {
         return minCombo;
     }
-    
+
+    public void habilitarDosisLenta(boolean habilitar) {
+        dosisTxt.setEnabled(habilitar);
+        if (!habilitar) dosisTxt.setText("");
+    }
+
+    public void modoLectura() {
+
+        insulinaCheck.setEnabled(false);
+        sosCheck.setEnabled(false);
+
+        dietaTxt.setEditable(false);
+        medsTxt.setEditable(false);
+        freqTxt.setEditable(false);
+
+        horaCombo.setEnabled(false);
+        minCombo.setEnabled(false);
+
+        saveTtoBtn.setEnabled(false);
+        editarBtn.setEnabled(true);
+
+        habilitarDosisLenta(insulinaCheck.isSelected());
+    }
+
+    public void modoEdicion() {
+
+        insulinaCheck.setEnabled(true);
+        sosCheck.setEnabled(true);
+
+        dietaTxt.setEditable(true);
+        medsTxt.setEditable(true);
+        freqTxt.setEditable(true);
+
+        horaCombo.setEnabled(true);
+        minCombo.setEnabled(true);
+
+        saveTtoBtn.setEnabled(true);
+        editarBtn.setEnabled(false);
+
+        habilitarDosisLenta(insulinaCheck.isSelected());
+    }
+
+    public void bloquearCampos() {
+
+        nombreTxt.setEnabled(false);
+        rutTxt.setEnabled(false);
+
+        dietaTxt.setEnabled(true);
+        medsTxt.setEnabled(true);
+        sosCheck.setEnabled(true);
+        insulinaCheck.setEnabled(true);
+        dosisTxt.setEnabled(true);
+        freqTxt.setEnabled(true);
+    }
+
     public void habilitarPautaSOS(boolean habilitar) {
         pautaSosTxt.setEnabled(habilitar);
         if (!habilitar) pautaSosTxt.setText("");
     }
-    
-    
-
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -542,12 +535,5 @@ public void modoEdicion() {
     private javax.swing.JButton volverBtn;
     // End of variables declaration//GEN-END:variables
 
-    
-private void inicializarComboFrecLenta() {
-    comboFreqInsulinaLenta.removeAllItems();
-    comboFreqInsulinaLenta.addItem("6");
-    comboFreqInsulinaLenta.addItem("8");
-    comboFreqInsulinaLenta.addItem("12");
-}
     }
 

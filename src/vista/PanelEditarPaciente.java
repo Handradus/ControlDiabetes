@@ -5,8 +5,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class PanelEditarPaciente extends javax.swing.JPanel {
+
     public PanelEditarPaciente() {
         initComponents();
+        rutPacienteTxt.setEditable(false);
     }
 
     public JTextField getNombrePacienteTxt() {
@@ -28,15 +30,12 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
     public JButton getVolverBtn() {
         return volverBtn;
     }
-    
-    
-    
 
     public JButton getSaveEditPacienteBtn() {
         return saveEditPacienteBtn;
     }
-    
-       public void mostrarError(String mensaje) {
+
+    public void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(
                 this,
                 mensaje,
@@ -44,9 +43,14 @@ public class PanelEditarPaciente extends javax.swing.JPanel {
                 JOptionPane.ERROR_MESSAGE
         );
     }
-    
-    public void mostrarInfo(String mensaje){
-        JOptionPane.showMessageDialog(this, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
+
+    public void mostrarInfo(String mensaje) {
+        JOptionPane.showMessageDialog(
+                this,
+                mensaje,
+                "Información",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     /**

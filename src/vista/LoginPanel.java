@@ -3,8 +3,11 @@ package vista;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import modelo.Utilidades;
 
 public class LoginPanel extends javax.swing.JPanel {
+
     public LoginPanel() {
         initComponents();
     }
@@ -20,7 +23,52 @@ public class LoginPanel extends javax.swing.JPanel {
     public JTextField getUserTxt() {
         return userTxt;
     }
-    
+
+    public String getUsuarioLimpio() {
+        return Utilidades.normalizarNombre(userTxt.getText());
+    }
+
+    public String getPasswordLimpia() {
+        return new String(passTxt.getPassword()).trim();
+    }
+
+    public boolean validarCampos() {
+
+        String usuario = userTxt.getText();
+        String pass = new String(passTxt.getPassword());
+
+        if (Utilidades.esTextoVacio(usuario)) {
+            mostrarError("Ingrese el usuario.");
+            userTxt.requestFocus();
+            return false;
+        }
+
+        if (Utilidades.esTextoVacio(pass)) {
+            mostrarError("Ingrese la contraseña.");
+            passTxt.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
+    public void mostrarError(String mensaje) {
+        JOptionPane.showMessageDialog(
+            this,
+            mensaje,
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+        );
+    }
+
+    public void mostrarInfo(String mensaje) {
+        JOptionPane.showMessageDialog(
+            this,
+            mensaje,
+            "Información",
+            JOptionPane.INFORMATION_MESSAGE
+        );
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

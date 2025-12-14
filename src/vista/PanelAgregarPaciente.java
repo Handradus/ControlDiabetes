@@ -1,14 +1,17 @@
 package vista;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class PanelAgregarPaciente extends javax.swing.JPanel {
+
     public PanelAgregarPaciente() {
         initComponents();
     }
+
+
+
 
     public JButton getAddPacienteBtn() {
         return addPacienteBtn;
@@ -34,10 +37,7 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
         return volverBtn;
     }
 
-    
-    
-    
-     public void mostrarError(String mensaje) {
+    public void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(
                 this,
                 mensaje,
@@ -45,9 +45,14 @@ public class PanelAgregarPaciente extends javax.swing.JPanel {
                 JOptionPane.ERROR_MESSAGE
         );
     }
-    
-    public void mostrarInfo(String mensaje){
-        JOptionPane.showMessageDialog(this, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);
+
+    public void mostrarInfo(String mensaje) {
+        JOptionPane.showMessageDialog(
+                this,
+                mensaje,
+                "Información",
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
 
     /**
