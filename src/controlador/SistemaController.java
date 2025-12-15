@@ -53,7 +53,7 @@ public class SistemaController {
         this.ventana = ventana;
         this.gestorPacientes = gestorPacientes;
         this.gestorUsuarios = gestorUsuarios;
-        
+        //carga de datos persistentes
         try {
             gestorUsuarios.cargarUsuarios("usuarios.txt");
             gestorPacientes.cargarTodo("pacientes.txt", "glicemias.txt", "alertas.txt");
@@ -65,7 +65,7 @@ public class SistemaController {
         iniciarReloj();
     }
 
-    
+    //inicio de ventana principal y carga de primer panel (login)
     public void iniciar() {
         ventana.setVisible(true);
         mostrarLogin();
@@ -111,7 +111,7 @@ public class SistemaController {
 
     
     
-    
+    //funciones para manejo de jpanel de menu cuidador
 private void mostrarMenuCuidador() {
 
     panelCuidador = new PanelMenuCuidador();
@@ -139,7 +139,7 @@ private void mostrarMenuCuidador() {
             actualizarEstadoPaciente();
             cargarAlertasPaciente(pacienteSeleccionado);
         });
-
+//activador/de de paciente
     panelCuidador.getActivoCheck().addActionListener(e -> {
 
         if (pacienteSeleccionado == null) return;
@@ -196,7 +196,7 @@ private void mostrarMenuCuidador() {
 
     panelCuidador.getLogoutBtn()
             .addActionListener(e -> cerrarSesion());
-
+//busqueda de rut dinamica
     panelCuidador.getBuscarRutTxt().getDocument()
         .addDocumentListener(new DocumentListener() {
             @Override public void insertUpdate(DocumentEvent e) { filtrarPacientesPorRut(); }
@@ -346,6 +346,8 @@ private void mostrarEditarPaciente(Paciente paciente) {
             ventana.mostrarPanel(panelCuidador);
             listarPacientes();
         });
+    
+    //obtencion de datos de nuevo paciente desde jpanel
 
     panelEdicionPCT.getSaveEditPacienteBtn().addActionListener(e -> {
 
@@ -399,7 +401,7 @@ private void mostrarEditarPaciente(Paciente paciente) {
 }
 
 
-       
+       //Panel de creacion de cuidadores
     private void crearCuidador() {
                 
         String nombre = panelAdmin.getNombreCTxt().getText().trim();
@@ -509,7 +511,7 @@ private void crearPaciente(PanelAgregarPaciente panel) {
         panel.mostrarError("El nombre solo puede contener letras.");
         return;
     }
-
+//Lammado a funcion de verificacion de formato de rut desde utilidades
     rut = Utilidades.limpiarRut(rut);
     if (!Utilidades.esRutValido(rut)) {
         panel.mostrarError("RUT inválido.");
@@ -568,7 +570,7 @@ private void abrirRegistrarGlicemia() {
     }
 
     Paciente p = pacientesEnTabla.get(fila);
-
+//verificacion del estado de paciente antes de ingreso de glicemia
     if (!p.isActivo()) {
         JOptionPane.showMessageDialog(
             ventana,
@@ -641,7 +643,7 @@ private void abrirRegistrarGlicemia() {
     ventana.mostrarPanel(panelRegistrarGlicemia);
 }
 
-
+//funcion de comprobacion de valor de glicemia ingresado, y evaluacion de criticidad
 private void mostrarMensajeClinico(int valor, Tratamiento t) {
 
     if (valor < 70) {
@@ -692,7 +694,7 @@ private void mostrarMensajeClinico(int valor, Tratamiento t) {
 
 
 
-
+//panel de revisioon de tratamniento de paciente 
 private void abrirTratamientoPaciente() {
 
     if (pacienteSeleccionado == null) {
@@ -765,7 +767,7 @@ private void abrirTratamientoPaciente() {
     }
     
     
-    
+    //panel de tratamiento para edicion, por bloqueo de campos
 private void abrirTratamientoParaEdicion(Paciente p) {
 
     panelTratamiento = new PanelTratamiento();

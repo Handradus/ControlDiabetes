@@ -130,6 +130,8 @@ public class Paciente {
             this.alertas.add(alerta);
         }
     }
+    
+    //calculo de criticidad por glicemias
 
     public void generarAlertaPorGlicemia(RegistroGlicemia r) {
 
@@ -163,6 +165,7 @@ public class Paciente {
         }
     }
 
+    //Caluclo inicial de control de glicemia
     public void recalcularProximoControl() {
 
         if (tratamiento == null) {
@@ -189,6 +192,8 @@ public class Paciente {
 
         proximoControl = candidato;
     }
+    
+    //funcion para calculo de siguiente control al ingresar un control de glicemia
 
     public void avanzarProximoControlTrasRegistro() {
 

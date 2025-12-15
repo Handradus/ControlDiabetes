@@ -1,0 +1,2 @@
+21.358.808-7;14-12-2025 17:41:33;CRITICA;Glicemia crítica (543);false
+18.389.512-5;14-12-2025 17:41:33;CRITICA;Glicemia crítica (435);false
