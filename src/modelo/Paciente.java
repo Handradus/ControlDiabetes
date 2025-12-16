@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+// Este es el paciente del sistema que tiene la información personal y el tratamiento que tienen asignados, sumando igual el
+// historial de glicemias y las alertas que tiene asociadas
 public class Paciente {
 
     private String nombre;
@@ -213,6 +215,8 @@ public class Paciente {
 
         LocalDateTime ahora = LocalDateTime.now();
         while (!proximoControl.isAfter(ahora)) {
+
+            /*asegura que el próximo control siempre quede programado en una fecha futura */
             proximoControl = proximoControl.plusHours(freq);
         }
     }
