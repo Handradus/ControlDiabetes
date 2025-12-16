@@ -8,6 +8,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
+
+/*
+Inicializa el gestor de usuarios del sistema. Se crea un usuario administrador por defecto
+*/
 public class GestorUsuarios {
 
     private ArrayList<Usuario> usuarios;
@@ -28,6 +33,7 @@ public class GestorUsuarios {
         return null;
     }
 
+    //Verifica si ya existe un usuario con el nombre que estya indicado, así se evita la duplicación de cuentas en el sistema
     public boolean existeUsuario(String nombreUsuario) {
         for (Usuario u : usuarios) {
             if (u.getNombreUsuario().equalsIgnoreCase(nombreUsuario)) {
@@ -68,6 +74,12 @@ public class GestorUsuarios {
     public ArrayList<Usuario> getUsuarios() {
         return usuarios;
     }
+
+    
+    //Guarda los usuarios del sistema en un archivo de texto, incluyendo credenciales y rol asignado, luego se cargan los usuarios
+    // desde un archivo de texto que reconstruye las cuetnas según su rol
+    
+    
     
     public void archivar(String nombreArchivo) throws IOException {
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo))){
