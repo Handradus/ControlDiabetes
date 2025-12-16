@@ -8,6 +8,13 @@ import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+
+/*
+Esta clase esta encargada de gestionar el conjunto de pacientes del sistema.
+Que esto permite el agregar, buscar y listar pacientes, además de manejar la
+persistencia de pacientes, glicemias y  las alertas en archivos de texto
+*/
+
 public class GestorPacientes {
 
     private ArrayList<Paciente> listaPacientes;
@@ -22,7 +29,8 @@ public class GestorPacientes {
         listaPacientes.add(p);
         return true;
     }
-
+    
+    // Retorna paciente si existe, null en caso contrario
     public Paciente buscarPorRut(String rut) {
         if (rut == null || rut.trim().isEmpty()) return null;
         for (Paciente p : listaPacientes) {
