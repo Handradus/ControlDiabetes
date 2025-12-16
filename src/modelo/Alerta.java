@@ -3,6 +3,12 @@ package modelo;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+
+/*
+Alerta clínica generada automáticamente a partir de registros de glicemia fuera de los rangos normales. 
+Quedan registradas para el seguimiento
+ */
+
 public class Alerta {
 
     private String tipo;
