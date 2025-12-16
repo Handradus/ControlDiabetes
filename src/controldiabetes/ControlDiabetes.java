@@ -1,6 +1,6 @@
 package controldiabetes;
 
-import controlador.AuthService;
+
 import controlador.SistemaController;
 import modelo.GestorPacientes;
 import modelo.GestorUsuarios;
