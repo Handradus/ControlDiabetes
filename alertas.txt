@@ -1,2 +1,1 @@
-21.358.808-7;15-12-2025 23:32:46;CRITICA;Glicemia crítica (543);false
-18.389.512-5;15-12-2025 23:32:46;CRITICA;Glicemia crítica (435);false
+18.389.512-5;16-12-2025 14:22:48;CRITICA;Glicemia crítica (450);false

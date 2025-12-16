@@ -1,3 +1,2 @@
-Lllllllll;21.358.808-7;12;1254125124;;;false;false;0;0;;;
-Era;18.389.512-5;12;A2;balnda;aspirina;true;true;12;1;1 vez al día;04:00;3 unidades
-Ana Urrutia;8.219.727-3;56;A1;;;false;false;0;0;;;
+Humberto;18.389.512-5;32;A1;Normal;paracetamol 1gr;true;true;10;12;1 vez al día;00:00;insulina ya
+Ana;8.219.727-3;43;W1;n;n;false;false;0;1;;00:00;
