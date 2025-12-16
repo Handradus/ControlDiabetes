@@ -1,5 +1,8 @@
 package modelo;
 
+// hoario programado para la administración de una dosis, para llevar control de si fueron administradas las dosis o si existe alguna
+// alguna alerta que esta activa y asociada
+
 import java.time.LocalTime;
 
 public class HorarioDosis {
