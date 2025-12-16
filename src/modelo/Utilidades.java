@@ -2,14 +2,23 @@ package modelo;
 
 public class Utilidades {
 
+    
+/*
+Clase utilitaria que centraliza las validaciones y la normalización de datos utilizados en el sistema.
+*/
+ 
+    
+//Si texto esta nulo o vacio    
     public static boolean esTextoVacio(String texto) {
         return texto == null || texto.trim().isEmpty();
     }
 
+    //Si es un texto con solo letras y ciertos espacios
     public static boolean esSoloLetras(String texto) {
         return texto != null && texto.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+");
     }
 
+    //Aqui se deja el nombre con la primera letra de cada palabra en mayúscula
     public static String normalizarNombre(String nombre) {
         if (nombre == null) return "";
         nombre = nombre.trim().toLowerCase();
@@ -50,11 +59,13 @@ public class Utilidades {
         return valor >= 20 && valor <= 600;
     }
 
+    //En este metodo se eliminan los puntos y los guiones de un RUT
     public static String limpiarRut(String rut) {
         if (rut == null) return "";
         return rut.replace(".", "").replace("-", "").toUpperCase();
     }
 
+   //Si es valido el RUT chileno y se agregan los puntos y guión respectivo 
     public static boolean esRutValido(String rut) {
         rut = limpiarRut(rut);
         if (rut.length() < 8) return false;
@@ -107,6 +118,7 @@ public class Utilidades {
         return hora >= 0 && hora <= 23 && minuto >= 0 && minuto <= 59;
     }
 
+    //Verifica la frecuencia de horas y si esta en un rango permitido
     public static boolean esFrecuenciaValida(int horas) {
         return horas > 0 && horas <= 24;
     }
