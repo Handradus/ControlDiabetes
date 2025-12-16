@@ -4,6 +4,8 @@ public abstract class Usuario {
     private String nombreUsuario;
     private String password;
     
+    //Clase base para los usuarios del sistema, aqui se definen los comportamientos comunes para los roles disponibles
+
     public Usuario(String nombreUsuario, String password) {
         this.setNombreUsuario(nombreUsuario);
         this.setPassword(password);
