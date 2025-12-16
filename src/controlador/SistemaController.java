@@ -24,6 +24,8 @@ import javax.swing.event.DocumentListener;
 
 
 
+//Controlador principal del sistema, en el cual se coordina la interacción en tre los miodelos, la logica de negocio y las vistas
+// según el rol del usuario
 
 public class SistemaController {
     private Paciente pacienteSeleccionado;
@@ -120,7 +122,9 @@ private void mostrarMenuCuidador() {
         .getSelectionModel()
         .addListSelectionListener(e -> {
 
-            if (e.getValueIsAdjusting()) return;
+            /*detecta el cambio de selección en la tabla de pacientes para identificar el paciente actualmente seleccionado */
+            
+            if (e.getValueIsAdjusting()) return;  // Se evita el ejecutar lógica dos veces durante el cambio de selección de la tabla
 
             int fila = panelCuidador.getPctTabla().getSelectedRow();
 
@@ -131,7 +135,7 @@ private void mostrarMenuCuidador() {
             }
 
             pacienteSeleccionado = pacientesEnTabla.get(fila);
-
+//activador/de de paciente
             panelCuidador.getActivoCheck()
                     .setSelected(pacienteSeleccionado.isActivo());
 
@@ -199,6 +203,9 @@ private void mostrarMenuCuidador() {
 //busqueda de rut dinamica
     panelCuidador.getBuscarRutTxt().getDocument()
         .addDocumentListener(new DocumentListener() {
+
+            /* se escucha cambios en tiempo real en el campo de búsqueda para filtrar pacientes automáticamente */
+            
             @Override public void insertUpdate(DocumentEvent e) { filtrarPacientesPorRut(); }
             @Override public void removeUpdate(DocumentEvent e) { filtrarPacientesPorRut(); }
             @Override public void changedUpdate(DocumentEvent e) { filtrarPacientesPorRut(); }
@@ -208,6 +215,11 @@ private void mostrarMenuCuidador() {
     listarPacientes();
     panelCuidador.habilitarPanelPaciente(false);
 }
+
+
+
+//Se actualiza el estado de los botones según el paciente que se esta seleccionando
+    
 private void actualizarEstadoPaciente() {
 
     if (pacienteSeleccionado == null) {
