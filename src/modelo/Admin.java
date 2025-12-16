@@ -1,15 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
-/**
- *
- * @author Diavuru
- */
 public class Admin extends Usuario {
 
+    /*
+Usuario con rol administrador encargado de la gestión de cuentas de cuidadores.
+Separa las tareas administrativas del registro clínico del sistema
+ */
+    
     public Admin(String nombreUsuario, String password) {
         super(nombreUsuario, password);
     }

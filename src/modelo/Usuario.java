@@ -1,26 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
-
-/**
- *
- * @author Diavuru
- */
 
 public abstract class Usuario {
     private String nombreUsuario;
     private String password;
     
-    
-    // Constructor
+    //Clase base para los usuarios del sistema, aqui se definen los comportamientos comunes para los roles disponibles
+
     public Usuario(String nombreUsuario, String password) {
         this.setNombreUsuario(nombreUsuario);
         this.setPassword(password);
     }
-    
-    // Setters
+
     public void setNombreUsuario(String nombre) {
         if (nombre != null && !nombre.trim().isEmpty()){
             this.nombreUsuario = nombre;
@@ -40,8 +30,7 @@ public abstract class Usuario {
         }
         this.password = password;
     }
-    
-    // Getters
+
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -49,8 +38,7 @@ public abstract class Usuario {
     public String getPassword() {
         return password;
     }
-    
-    // validador de contrasela
+
     public boolean passwordValida(String passwordIngresada) {
         return this.password != null && this.password.equals(passwordIngresada);
     }

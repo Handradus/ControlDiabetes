@@ -1,17 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
-
-/**
- *
- * @author Diavuru
- */
 
 public class Cuidador extends Usuario {
 
    
+/*
+Usuario con rol cuidador encargado de la gestión diaria de los pacientes.
+Permite registrar glicemias, administrar tratamientos y revisar alertas clínicas.
+*/
 
     public Cuidador(String nombreUsuario, String password) {
         super(nombreUsuario, password);

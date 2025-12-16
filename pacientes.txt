@@ -1,0 +1,2 @@
+Humberto;18.389.512-5;32;A1;Normal;paracetamol 1gr;true;true;10;12;1 vez al día;00:00;insulina ya
+Ana;8.219.727-3;43;W1;n;n;false;false;0;1;;00:00;

@@ -4,124 +4,163 @@ import java.time.LocalTime;
 
 public class Tratamiento {
 
+//tratamiento glicémico asignado a un paciente. Aqui se define dieta, medicamentos, uso de insulina y la programación
+//de controles periódicos
     
+
     private String dietaRecomendada;
     private String medicamentosOrales; 
     private boolean usaInsulinaCristalinaSOS;
     private boolean usaInsulinaLentaDiaria;
     private int dosisInsulinaLentaDiaria; 
+    private String frecInsulina;
+    private String pautaInsulinaSOS;
 
-    private int frecuenciaHorasControles;     // 8, 12, 24
-    private LocalTime horaPrimerControl;      // hora del primer control del día
+    private int frecuenciaHorasControles;
+    private LocalTime horaPrimerControl;
 
-    // Constructor
-    public Tratamiento(String dietaRecomendada,
-                       String medicamentosOrales,
-                       boolean usaInsulinaCristalinaSOS,
-                       boolean usaInsulinaLentaDiaria,
-                       int dosisInsulinaLentaDiaria,
-                       int frecuenciaHorasControles,
-                       LocalTime horaPrimerControl) {
-        this.setDietaRecomendada (dietaRecomendada);
-        this.setMedicamentosOrales (medicamentosOrales);
-        this.setUsaInsulinaCristalinaSOS (usaInsulinaCristalinaSOS);
-        this.setUsaInsulinaLentaDiaria (usaInsulinaLentaDiaria);
-        this.setDosisInsulinaLentaDiaria (dosisInsulinaLentaDiaria);
-        this.setFrecuenciaHorasControles (frecuenciaHorasControles);
-        this.setHoraPrimerControl (horaPrimerControl);
+    public Tratamiento(
+            String dietaRecomendada,
+            String medicamentosOrales,
+            boolean usaInsulinaCristalinaSOS,
+            boolean usaInsulinaLentaDiaria,
+            int dosisInsulinaLentaDiaria,
+            String frecInsulina,
+            int frecuenciaHorasControles,
+            LocalTime horaPrimerControl,
+            String pautaInsulinaSOS
+    ) {
+        this.setDietaRecomendada(dietaRecomendada);
+        this.setMedicamentosOrales(medicamentosOrales);
+        this.setUsaInsulinaCristalinaSOS(usaInsulinaCristalinaSOS);
+        this.setUsaInsulinaLentaDiaria(usaInsulinaLentaDiaria);
+        this.setDosisInsulinaLentaDiaria(dosisInsulinaLentaDiaria);
+        this.setFrecInsulina(frecInsulina);
+        this.setFrecuenciaHorasControles(frecuenciaHorasControles);
+        this.setHoraPrimerControl(horaPrimerControl);
+        this.setPautaInsulinaSOS(pautaInsulinaSOS);
+        validarCoherencia();
     }
 
-    // setters
-        
-      
-    public void setMedicamentosOrales(String medicamentosOrales) {
-        if (medicamentosOrales != null && !medicamentosOrales.trim().isEmpty()){
-            this.medicamentosOrales = medicamentosOrales;
+    private void validarCoherencia() {
+
+        if (!usaInsulinaLentaDiaria) {
+            dosisInsulinaLentaDiaria = 0;
+            frecInsulina = "";
         }
+
+        if (!usaInsulinaCristalinaSOS) {
+            pautaInsulinaSOS = "";
+        }
+
+        if (frecuenciaHorasControles > 0 && horaPrimerControl == null) {
+            frecuenciaHorasControles = 0;
+        }
+
+        if (horaPrimerControl != null && frecuenciaHorasControles <= 0) {
+            horaPrimerControl = null;
+        }
+    }
+
+    public void setDietaRecomendada(String dietaRecomendada) {
+        this.dietaRecomendada = Utilidades.esTextoVacio(dietaRecomendada)
+                ? ""
+                : dietaRecomendada.trim();
+    }
+
+    public void setMedicamentosOrales(String medicamentosOrales) {
+        this.medicamentosOrales = Utilidades.esTextoVacio(medicamentosOrales)
+                ? ""
+                : medicamentosOrales.trim();
     }
 
     public void setUsaInsulinaCristalinaSOS(boolean usaInsulinaCristalinaSOS) {
         this.usaInsulinaCristalinaSOS = usaInsulinaCristalinaSOS;
     }
-    
+
+    public void setUsaInsulinaLentaDiaria(boolean usaInsulinaLentaDiaria) {
+        this.usaInsulinaLentaDiaria = usaInsulinaLentaDiaria;
+    }
+
+    public void setDosisInsulinaLentaDiaria(int dosisInsulinaLentaDiaria) {
+        if (!Utilidades.estaEnRango(dosisInsulinaLentaDiaria, 0, 80)) {
+            this.dosisInsulinaLentaDiaria = 0;
+            return;
+        }
+        this.dosisInsulinaLentaDiaria = dosisInsulinaLentaDiaria;
+    }
+
+    public void setFrecInsulina(String frecInsulina) {
+        this.frecInsulina = Utilidades.esTextoVacio(frecInsulina)
+                ? ""
+                : frecInsulina.trim();
+    }
+
+    public void setFrecuenciaHorasControles(int frecuenciaHorasControles) {
+        if (!Utilidades.esFrecuenciaValida(frecuenciaHorasControles)) {
+            this.frecuenciaHorasControles = 0;
+            return;
+        }
+        this.frecuenciaHorasControles = frecuenciaHorasControles;
+    }
+
+    public void setHoraPrimerControl(LocalTime horaPrimerControl) {
+        this.horaPrimerControl = horaPrimerControl;
+    }
+
+    public void setPautaInsulinaSOS(String pautaInsulinaSOS) {
+        this.pautaInsulinaSOS = Utilidades.esTextoVacio(pautaInsulinaSOS)
+                ? ""
+                : pautaInsulinaSOS.trim();
+    }
+
+    public String getDietaRecomendada() {
+        return dietaRecomendada;
+    }
+
+    public String getMedicamentosOrales() {
+        return medicamentosOrales;
+    }
+
+    public boolean isUsaInsulinaCristalinaSOS() {
+        return usaInsulinaCristalinaSOS;
+    }
 
     public boolean isUsaInsulinaLentaDiaria() {
         return usaInsulinaLentaDiaria;
     }
 
-    public void setUsaInsulinaLentaDiaria(boolean usaInsulinaLentaDiaria) {
-        this.usaInsulinaLentaDiaria = usaInsulinaLentaDiaria;
-    }
-   
-    
-    public void setDosisInsulinaLentaDiaria(int dosisInsulinaLentaDiaria) {
-    
-        if (dosisInsulinaLentaDiaria < 0) {
-            System.err.println("Error: La dosis de insulina no puede ser un número negativo.");
-            return;
-        }
-    
-        if (dosisInsulinaLentaDiaria > 80) {
-             System.err.println("Error: La dosis de insulina (" + dosisInsulinaLentaDiaria + ") es demasiado alta.");
-             return;
-        }
-   
-    this.dosisInsulinaLentaDiaria = dosisInsulinaLentaDiaria;
-}
-   
-    public void setFrecuenciaHorasControles(int frecuenciaHorasControles) {
-    
-        if (frecuenciaHorasControles < 0) {
-            System.err.println("Error: La dosis de insulina no puede ser un número negativo.");
-            return;
-        }
-    //editar segun el controller
-        if (frecuenciaHorasControles > 12) {
-             System.err.println("Error: La cantidad de controles (" + dosisInsulinaLentaDiaria + ") es demasiado alta.");
-             return;
-        }
-   
-    this.frecuenciaHorasControles = frecuenciaHorasControles;
-}
-   
-    public void setHoraPrimerControl(LocalTime horaPrimerControl) {
-        this.horaPrimerControl = horaPrimerControl;
-    }
-    
-    //Getters
-    public String getMedicamentosOrales() {
-        return medicamentosOrales;
-    }
-    
-    public String getDietaRecomendada() {
-        return dietaRecomendada;
-    }
-     public int getDosisInsulinaLentaDiaria() {
+    public int getDosisInsulinaLentaDiaria() {
         return dosisInsulinaLentaDiaria;
     }
-    
+
+    public String getFrecInsulina() {
+        return frecInsulina;
+    }
+
+    public String getPautaInsulinaSOS() {
+        return pautaInsulinaSOS;
+    }
+
     public int getFrecuenciaHorasControles() {
         return frecuenciaHorasControles;
     }
+
     public LocalTime getHoraPrimerControl() {
         return horaPrimerControl;
-    }
-    public void setDietaRecomendada(String dietaRecomendada) {
-        this.dietaRecomendada = dietaRecomendada;
-    }
-    public boolean isUsaInsulinaCristalinaSOS() {
-        return usaInsulinaCristalinaSOS;
     }
 
     @Override
     public String toString() {
         return "Tratamiento{" +
-                "dieta='" + dietaRecomendada + '\'' +
-                ", medsOrales='" + medicamentosOrales + '\'' +
-                ", insulinaSOS=" + usaInsulinaCristalinaSOS +
-                ", insulinaLenta=" + usaInsulinaLentaDiaria +
-                ", dosisLenta=" + dosisInsulinaLentaDiaria +
-                ", freqControles=" + frecuenciaHorasControles +
+                "dietaRecomendada=" + dietaRecomendada +
+                ", medicamentosOrales=" + medicamentosOrales +
+                ", usaInsulinaCristalinaSOS=" + usaInsulinaCristalinaSOS +
+                ", usaInsulinaLentaDiaria=" + usaInsulinaLentaDiaria +
+                ", dosisInsulinaLentaDiaria=" + dosisInsulinaLentaDiaria +
+                ", frecInsulina=" + frecInsulina +
+                ", pautaInsulinaSOS=" + pautaInsulinaSOS +
+                ", frecuenciaHorasControles=" + frecuenciaHorasControles +
                 ", horaPrimerControl=" + horaPrimerControl +
                 '}';
     }
