@@ -1,7 +1,10 @@
 package modelo;
 
 public class RegistroGlicemia {
-
+    
+    
+    /* Aqui se representa el registro de glicemia individual con el almacenaje del valor medido, así como la fecha en la que
+    se registro y que cuidador realizó la medición*/
     private String fechaHora;
     private int valor;
     private String registrado;
