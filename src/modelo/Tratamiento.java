@@ -4,6 +4,10 @@ import java.time.LocalTime;
 
 public class Tratamiento {
 
+//tratamiento glicémico asignado a un paciente. Aqui se define dieta, medicamentos, uso de insulina y la programación
+//de controles periódicos
+    
+
     private String dietaRecomendada;
     private String medicamentosOrales; 
     private boolean usaInsulinaCristalinaSOS;
